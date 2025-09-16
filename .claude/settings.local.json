@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(C:\\Users\\wschoenberger\\.claude/**)",
+      "Bash(python:*)",
+      "Bash(pip install:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

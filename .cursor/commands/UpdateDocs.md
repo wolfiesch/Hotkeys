@@ -1,0 +1,1 @@
+update mapping.md for recent changes - update both the mapping summary and add an entry in the changelog if anything has change since the last changelog update
