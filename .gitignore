@@ -11,6 +11,7 @@ $RECYCLE.BIN/
 
 # AutoHotkey
 *.ahk.bak
+*.ahk
 
 # Python
 __pycache__/
