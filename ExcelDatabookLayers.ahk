@@ -11,7 +11,11 @@
 ; =============================================================================
 
 ; Keep CapsLock off
-SetCapsLockState("Off")
+SetCapsLockState("AlwaysOff")
+
+; Treat CapsLock as a global modifier
+SC03A::Return
+SC03A up::Return
 
 ; Set consistent key timing for better Excel compatibility
 SetKeyDelay(50, 50)  ; 50ms press duration, 50ms release delay
@@ -83,9 +87,11 @@ F1::Send("{F2}")    ; Use F2 edit key while Excel is focused
 ; -----------------------------------------------------------------------------
 ; Single CapsLock Hold Layer Map
 ; -----------------------------------------------------------------------------
-; PASTE: v,f,t,w,s,x,l,p + Numpad* / + - /
+; PASTE: v,f,t,w,s,x,l,p + Numpad+ -
+; FILTER: Numpad/ + Numpad*
+; DELETE: / (Ctrl=Row)
 ; FORMAT: 1,2,3,4,6 + 9,a,k,5,m,d + F1-F4 + r,b,o,i,c,y,j,; + q,F5,F6,F11,F12 + Numpad.,0
-; NAV: [,],=,-,.,,g,8,h + Numpad8,2,4,6,7,9
+; NAV: [,],=,-,.,,g,8,h,Right,Left + Numpad8,2,4,6,7,9
 ; DATA: u,F8,n,e,F7,F9 + z,Backspace,Delete
 ; -----------------------------------------------------------------------------
 
@@ -274,6 +280,33 @@ ClearFilter() {
     Wait(Timing.NAV_DELAY)
     Send("c")       ; Clear
     ShowHUD("Clear Filter", 800)
+}
+
+DeleteSheetColumn() {
+    ; Alt + H, D, C (Delete Sheet Columns)
+    Send("!h")      ; Home ribbon
+    Wait(Timing.RIBBON_DELAY)
+    Send("d")       ; Delete menu
+    Wait(Timing.NAV_DELAY)
+    Send("c")       ; Delete sheet columns
+    ShowHUD("Delete Column", 800)
+}
+
+DeleteSheetRow() {
+    ; Alt + H, D, R (Delete Sheet Rows)
+    Send("!h")      ; Home ribbon
+    Wait(Timing.RIBBON_DELAY)
+    Send("d")       ; Delete menu
+    Wait(Timing.NAV_DELAY)
+    Send("r")       ; Delete sheet rows
+    ShowHUD("Delete Row", 800)
+}
+
+GroupAndCollapseSelection() {
+    ; Alt + A, G, G then Alt + A, H to collapse group
+    Send("!agg")
+    Wait(Timing.DIALOG_DELAY)
+    Send("!ah")
 }
 
 ; -----------------------------------------------------------------------------
@@ -757,7 +790,25 @@ ClearAllSel() {
 }
 
 ; -----------------------------------------------------------------------------
-; Single CapsLock Hold Layer - All hotkeys in one block
+; Global CapsLock Hold Layer - Works everywhere
+; -----------------------------------------------------------------------------
+#HotIf GetKeyState("SC03A","P")
+
+; HELP - Global help system showing Excel-specific shortcuts
+SC03A & Space::ShowOSD("CAPSLOCK LAYER - EXCEL SHORTCUTS",
+    "PASTE: v,f,t,w,s,x,l,p + Numpad+ -`n" .
+    "FILTER: Numpad/ (Toggle) Numpad* (Clear)`n" .
+    "DELETE: / (Ctrl=Row)`n" .
+    "FORMAT: 1,2,3,4,6 + 9,a,k,5,m,d + F1-F4 + r,b,o,i,c,y,j,; + q,F5,F6,F11,F12 + Numpad.,0`n" .
+    "NAV: [,],=,-,.,,g,8,h,Right,Left + Numpad8,2,4,6,7,9`n" .
+    "DATA: u,F8,n,e,F7,F9 + z,Backspace,Delete`n" .
+    "Note: Excel-specific hotkeys only work in Excel",
+    2500, "top-center", 720)
+
+#HotIf
+
+; -----------------------------------------------------------------------------
+; Excel-Specific CapsLock Hold Layer - All hotkeys in one block
 ; -----------------------------------------------------------------------------
 #HotIf (IsExcel() && GetKeyState("SC03A","P"))
 
@@ -779,6 +830,14 @@ SC03A & l::Do(() => PasteLink(), "Paste Link")                               ; P
 SC03A & p::Do(() => Send("^!v"), "Paste Special Dialog")                               ; Paste Special dialog
 
 ; Numpad operations
+SC03A & /::
+{
+    if GetKeyState("Ctrl","P") {
+        Do(DeleteSheetRow, "Delete Row")
+    } else {
+        Do(DeleteSheetColumn, "Delete Column")
+    }
+}
 SC03A & NumpadDiv::Do(() => ToggleFilter(), "Toggle Filter")                    ; Toggle Filter (Alt+H+S+F)
 SC03A & NumpadMult::Do(() => ClearFilter(), "Clear Filter")                      ; Clear Filter (Alt+H+S+C)
 SC03A & NumpadAdd::Do(() => PasteOperation("add"), "Paste Add")             ; Paste Operation Add
@@ -852,9 +911,34 @@ SC03A & =::Do(() => JumpToBlockEdge("first"), "First Block Edge")               
 SC03A & -::Do(() => JumpToBlockEdge("last"), "Last Block Edge")                   ; Last block edge
 SC03A & ,::Do(() => Send("^{PgUp}"), "Previous Sheet")                           ; Previous sheet
 SC03A & .::Do(() => Send("^{PgDn}"), "Next Sheet")                           ; Next sheet
-SC03A & g::Do(() => Send("^g"), "Go To")                                ; Go To
+SC03A & g::
+{
+    if GetKeyState("Ctrl","P") {
+        Do(GroupAndCollapseSelection, "Group and Collapse")
+    } else {
+        Do(() => Send("^g"), "Go To")
+    }
+}
 SC03A & 8::Do(() => Send("^+8"), "Current Region")                               ; Current Region
 SC03A & h::Do(() => Send("^!+h"), "Custom Macro Ctrl+Alt+Shift+H")                  ; Custom macro Ctrl+Alt+Shift+H
+
+SC03A & Right::
+{
+    if GetKeyState("Ctrl","P") {
+        Do(() => Send("{Shift down}{Right 11}{Shift up}"), "Select Right 11")
+    } else {
+        Do(() => Send("{Right 12}"), "Move Right 12")
+    }
+}
+
+SC03A & Left::
+{
+    if GetKeyState("Ctrl","P") {
+        Do(() => Send("{Shift down}{Left 11}{Shift up}"), "Select Left 11")
+    } else {
+        Do(() => Send("{Left 12}"), "Move Left 12")
+    }
+}
 
 ; Numpad navigation
 SC03A & Numpad8::Do(() => Send("^{Up}"), "Ctrl+Up")                       ; Ctrl+Arrow Up
@@ -877,14 +961,6 @@ SC03A & z::Do(ClearFormatsSel, "Clear Formats")                                 
 SC03A & Backspace::Do(ClearContentsSel, "Clear Contents")                        ; Clear Contents
 SC03A & Delete::Do(ClearAllSel, "Clear All")                                ; Clear All
 
-; HELP
-SC03A & Space::ShowOSD("CAPSLOCK LAYER",
-    "PASTE: v,f,t,w,s,x,l,p + Numpad+ - /`n" .
-    "FILTER: Numpad/ (Toggle) Numpad* (Clear)`n" .
-    "FORMAT: 1,2,3,4,6 + 9,a,k,5,m,d + F1-F4 + r,b,o,i,c,y,j,; + q,F5,F6,F11,F12 + Numpad.,0`n" .
-    "NAV: [,],=,-,.,,g,8,h + Numpad8,2,4,6,7,9`n" .
-    "DATA: u,F8,n,e,F7,F9 + z,Backspace,Delete",
-    2500, "top-center", 720)
 
 #HotIf
 

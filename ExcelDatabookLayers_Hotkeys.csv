@@ -9,7 +9,8 @@ PASTE,CapsLock+S,SC03A & s,Paste Formulas + Format,Paste both formulas and forma
 PASTE,CapsLock+X,SC03A & x,Paste Values (Transpose),Paste values with transpose operation,768
 PASTE,CapsLock+L,SC03A & l,Paste Link,Create linked paste,769
 PASTE,CapsLock+P,SC03A & p,Paste Special Dialog,Open Paste Special dialog box,770
-PASTE,CapsLock+Numpad/,SC03A & NumpadDiv,Toggle Filter,Toggle AutoFilter on/off,773
+FILTER,CapsLock+Numpad/,SC03A & NumpadDiv,Toggle Filter,Toggle AutoFilter on/off,812
+DELETE,CapsLock+/,SC03A & /,Delete Column / Row,Delete column; Ctrl adds Delete Row,804
 PASTE,CapsLock+Numpad*,SC03A & NumpadMult,Clear Filter,Clear all filters,774
 PASTE,CapsLock+Numpad+,SC03A & NumpadAdd,Paste Add,Paste operation with addition,775
 PASTE,CapsLock+Numpad-,SC03A & NumpadSub,Paste Subtract,Paste operation with subtraction,776
@@ -46,12 +47,14 @@ SIZING,CapsLock+Numpad0,SC03A & Numpad0,Remove Decimal Place,Decrease decimal pl
 NAVIGATION,CapsLock+[,SC03A & [,Previous Divider,Jump to previous data boundary,840
 NAVIGATION,CapsLock+],SC03A & ],Next Divider,Jump to next data boundary,841
 NAVIGATION,CapsLock+=,SC03A & =,First Block Edge,Jump to first block edge,842
-NAVIGATION,CapsLock+-,SC03A & -,Last Block Edge,Jump to last block edge,843
+NAVIGATION,CapsLock+-,SC03A & -,Last Block Edge,Jump to last block edge,882
 NAVIGATION,CapsLock+Comma,SC03A & `,`,Previous Sheet,Switch to previous worksheet,844
 NAVIGATION,CapsLock+Period,SC03A & .,Next Sheet,Switch to next worksheet,845
-NAVIGATION,CapsLock+G,SC03A & g,Go To,Open Go To dialog (Ctrl+G),846
+NAVIGATION,CapsLock+G,SC03A & g,Go To,Open Go To dialog (Ctrl+G); Ctrl groups then collapse,914
 NAVIGATION,CapsLock+8,SC03A & 8,Select Current Region,Select current data region (Ctrl+Shift+8),847
 NAVIGATION,CapsLock+H,SC03A & h,Custom Macro H,Run custom macro Ctrl+Alt+Shift+H,848
+NAVIGATION,CapsLock+Right,SC03A & Right,Move Right 12,Move 12 cells to the right; Ctrl selects 11 cells while moving,889
+NAVIGATION,CapsLock+Left,SC03A & Left,Move Left 12,Move 12 cells to the left; Ctrl selects 11 cells while moving,898
 NAVIGATION,CapsLock+Numpad8,SC03A & Numpad8,Ctrl+Up,Move to edge of data block upward,851
 NAVIGATION,CapsLock+Numpad2,SC03A & Numpad2,Ctrl+Down,Move to edge of data block downward,852
 NAVIGATION,CapsLock+Numpad4,SC03A & Numpad4,Ctrl+Left,Move to edge of data block leftward,853
