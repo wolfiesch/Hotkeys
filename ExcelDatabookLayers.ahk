@@ -99,6 +99,7 @@ SC03A & Right::Send("^{Tab}")
 SC03A & m::
 {
     Send("^k")  ; Ctrl+K to open AI command palette
+    Sleep(200)  ; Wait for AI command palette to open
     Send("Generate a commit message summarizing recent changes")
     Send("{Enter}")
 }
