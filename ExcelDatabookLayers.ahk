@@ -76,6 +76,36 @@ SetKeyDelay(50, 50)  ; 50ms press duration, 50ms release delay
 #HotIf
 
 ; -----------------------------------------------------------------------------
+; Chrome CapsLock Integration
+; -----------------------------------------------------------------------------
+; Only active when Chrome is focused and CapsLock is held
+#HotIf (IsChrome() && GetKeyState("SC03A","P"))
+
+; CapsLock + Left Arrow → Previous tab (Ctrl+Shift+Tab)
+SC03A & Left::Send("^+{Tab}")
+
+; CapsLock + Right Arrow → Next tab (Ctrl+Tab)
+SC03A & Right::Send("^{Tab}")
+
+#HotIf
+
+; -----------------------------------------------------------------------------
+; Cursor CapsLock Integration
+; -----------------------------------------------------------------------------
+; Only active when Cursor is focused and CapsLock is held
+#HotIf (IsCursor() && GetKeyState("SC03A","P"))
+
+; CapsLock + M → Insert commit message template and press Enter
+SC03A & m::
+{
+    Send("^k")  ; Ctrl+K to open AI command palette
+    Send("Generate a commit message summarizing recent changes")
+    Send("{Enter}")
+}
+
+#HotIf
+
+; -----------------------------------------------------------------------------
 ; Excel base overrides
 ; -----------------------------------------------------------------------------
 #HotIf IsExcel()
@@ -116,6 +146,8 @@ class Timing {
 ; Helpers
 ; -----------------------------------------------------------------------------
 IsExcel() => WinActive("ahk_exe EXCEL.EXE")
+IsChrome() => WinActive("ahk_exe chrome.exe")
+IsCursor() => WinActive("ahk_exe Cursor.exe")
 
 ; COM functions removed - using ribbon commands only
 
