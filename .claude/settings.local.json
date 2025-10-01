@@ -1,9 +1,21 @@
 {
   "permissions": {
     "allow": [
-      "Read(C:\\Users\\wschoenberger\\.claude/**)",
-      "Bash(python:*)",
-      "Bash(pip install:*)"
+      "Bash(where:*)",
+      "WebSearch",
+      "WebFetch(domain:www.autohotkey.com)",
+      "Bash(curl:*)",
+      "Bash(powershell:*)",
+      "Bash(copy:*)",
+      "Bash(tasklist)",
+      "Bash(taskkill:*)",
+      "Bash(sed:*)",
+      "Bash(cat:*)",
+      "Bash(\"C:\\Users\\wschoenberger\\AppData\\Local\\Programs\\AutoHotkey\\v2\\AutoHotkey64.exe\" /ErrorStdOut \"ExcelDatabookLayers.ahk\")",
+      "Bash(grep:*)",
+      "Bash(unix2dos:*)",
+      "Bash(timeout:*)",
+      "Bash(start:*)"
     ],
     "deny": [],
     "ask": []

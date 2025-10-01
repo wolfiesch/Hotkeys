@@ -72,5 +72,87 @@ The script exclusively uses Excel's ribbon interface commands rather than COM au
 
 - `archive/` - Deprecated script versions and migration notes
 - `docs/` - Comprehensive documentation including HOTKEYS.md
+- `docs/autohotkey-v2/` - Official AutoHotkey v2.0.19 documentation (CHM format)
 - Root directory contains main script and reference materials
 - Python utilities for documentation generation
+
+## AutoHotkey v2 Documentation
+
+### Local Documentation Access
+
+The project includes the official AutoHotkey v2.0.19 documentation for offline reference:
+
+- **Primary Reference**: `docs/autohotkey-v2/AutoHotkey.chm` - Complete AutoHotkey v2 documentation
+- **License**: `docs/autohotkey-v2/AutoHotkey-license.txt` - AutoHotkey licensing terms
+
+### Development Workflow
+
+When working with AutoHotkey v2 code:
+
+1. **Check local docs first**: Open `docs/autohotkey-v2/AutoHotkey.chm` for syntax, functions, and examples
+2. **Common sections to reference**:
+   - Language syntax and operators
+   - Built-in functions and methods
+   - COM object automation
+   - Windows API integration
+   - Error handling patterns
+3. **Only search web** if local documentation doesn't cover the specific use case
+
+### Key AutoHotkey v2 Reference Areas
+
+- **Syntax Changes**: v2 uses different syntax from v1 (function calls require parentheses, etc.)
+- **COM Automation**: Used for File Explorer integration and Windows shell operations
+- **Window Detection**: `WinActive()` and window class detection patterns
+- **Error Handling**: `try/catch` blocks and error object structure
+- **Timing Functions**: `Sleep()`, timing constants, and delay management
+
+## Critical Debugging Lessons
+
+### ALWAYS Use /ErrorStdOut for Testing
+
+**Never test AutoHotkey scripts without the `/ErrorStdOut` switch!** This provides exact error messages instead of popup dialogs:
+
+```bash
+"C:\Users\wschoenberger\AppData\Local\Programs\AutoHotkey\v2\AutoHotkey64.exe" /ErrorStdOut "ExcelDatabookLayers.ahk"
+```
+
+### Common AutoHotkey v2 Parsing Issues
+
+1. **File Encoding**: AutoHotkey v2 prefers ANSI/ASCII encoding over UTF-8. Convert if seeing strange parsing errors.
+2. **Line Endings**: Must be Windows CRLF (`\r\n`), not Unix LF (`\n`). Use `unix2dos` or similar tools.
+3. **Backticks in Strings**: Backticks (`` ` ``) in strings can cause "A ':' is missing its '?'" errors as they're interpreted as incomplete ternary operators. Solutions:
+   - Use `Chr(10)` instead of `` `n`` for newlines
+   - Use double backticks (```` `` ````) to escape them
+   - Break long strings into multiple concatenated parts
+4. **Invalid Hotkey Combinations**:
+   - Cannot combine modifiers with scan code syntax: `^!SC03A & h` is INVALID
+   - Use simple combinations: `^!h` is VALID
+   - Scan codes must be uppercase: `SC03A` not `sc03a`
+5. **Semicolon in Hotkeys**: The semicolon (`;`) is problematic in hotkey definitions:
+   - `` CapsLock & `;`` causes parsing errors
+   - Use scan code instead: `SC03A & SC027`
+   - Or use a different key entirely
+
+### Error Diagnosis Process
+
+1. **Run with /ErrorStdOut** to get exact line numbers and error messages
+2. **Check the specific line** mentioned in the error
+3. **Look for backticks, semicolons, and special characters** in that line and nearby lines
+4. **Verify file encoding and line endings** if errors persist
+5. **Test incrementally** by commenting out sections to isolate issues
+
+### Testing Commands
+
+```bash
+# Check file encoding and line endings
+file ExcelDatabookLayers.ahk
+
+# Convert to Windows line endings
+unix2dos ExcelDatabookLayers.ahk
+
+# Convert UTF-8 to ANSI
+powershell -Command "Get-Content -Path 'ExcelDatabookLayers.ahk' -Encoding UTF8 | Set-Content -Path 'ExcelDatabookLayers.ahk' -Encoding Default"
+
+# Test with error output
+powershell -Command "& 'C:\Users\wschoenberger\AppData\Local\Programs\AutoHotkey\v2\AutoHotkey64.exe' '/ErrorStdOut' 'ExcelDatabookLayers.ahk'"
+```
