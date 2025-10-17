@@ -119,7 +119,17 @@ SetTimer(UpdateStatusOverlay, 150)  ; Update every 150ms for responsive feedback
 
 ; Treat CapsLock as a global modifier
 SC03A::Return
-; Note: SC03A up handlers are defined in context-specific #HotIf blocks below
+
+; Release any held modifiers when CapsLock is released
+SC03A up::
+{
+    global ChromeTabModifierHeld, CursorTabModifierHeld
+    if (ChromeTabModifierHeld || CursorTabModifierHeld) {
+        Send("{Shift Up}{Ctrl Up}")
+        ChromeTabModifierHeld := false
+        CursorTabModifierHeld := false
+    }
+}
 
 ; Global overlay toggle hotkey (works without CapsLock)
 ^!h::{
@@ -215,16 +225,6 @@ SC03A & Up::
     Send("{Tab}")
 }
 
-; CapsLock release handler for Chrome - release held modifiers
-SC03A up::
-{
-    global ChromeTabModifierHeld
-    if (ChromeTabModifierHeld) {
-        Send("{Shift Up}{Ctrl Up}")
-        ChromeTabModifierHeld := false
-    }
-}
-
 #HotIf
 
 ; -----------------------------------------------------------------------------
@@ -265,16 +265,6 @@ SC03A & Up::
         CursorTabModifierHeld := true
     }
     Send("{Tab}")
-}
-
-; CapsLock release handler for Cursor - release held modifiers
-SC03A up::
-{
-    global CursorTabModifierHeld
-    if (CursorTabModifierHeld) {
-        Send("{Shift Up}{Ctrl Up}")
-        CursorTabModifierHeld := false
-    }
 }
 
 #HotIf
