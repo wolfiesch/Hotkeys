@@ -14,8 +14,7 @@
 SetCapsLockState("AlwaysOff")
 
 ; Global variables for sticky tab navigation
-global ChromeTabModifierHeld := false
-global CursorTabModifierHeld := false
+global TabSwitchStates := Map()
 
 ; Initialize Status Overlay and Hotkey Tracking
 global StatusOverlay := {
@@ -121,15 +120,7 @@ SetTimer(UpdateStatusOverlay, 150)  ; Update every 150ms for responsive feedback
 SC03A::Return
 
 ; Release any held modifiers when CapsLock is released
-SC03A up::
-{
-    global ChromeTabModifierHeld, CursorTabModifierHeld
-    if (ChromeTabModifierHeld || CursorTabModifierHeld) {
-        Send("{Shift Up}{Ctrl Up}")
-        ChromeTabModifierHeld := false
-        CursorTabModifierHeld := false
-    }
-}
+SC03A up::ReleaseTabSwitchModifiers()
 
 ; Global overlay toggle hotkey (works without CapsLock)
 ^!h::{
@@ -202,28 +193,10 @@ SetKeyDelay(50, 50)  ; 50ms press duration, 50ms release delay
 #HotIf (IsChrome() && GetKeyState("SC03A","P"))
 
 ; CapsLock + Down Arrow -> Next tab (Ctrl held, then Tab)
-SC03A & Down::
-{
-    TrackHotkey("CapsLock+Down", "Next Tab")
-    global ChromeTabModifierHeld
-    if (!ChromeTabModifierHeld) {
-        Send("{Ctrl Down}")
-        ChromeTabModifierHeld := true
-    }
-    Send("{Tab}")
-}
+SC03A & Down::HandleCapsTabSwitch(Func("IsChrome"), "Chrome", "next")
 
 ; CapsLock + Up Arrow -> Previous tab (Ctrl+Shift held, then Tab)
-SC03A & Up::
-{
-    TrackHotkey("CapsLock+Up", "Previous Tab")
-    global ChromeTabModifierHeld
-    if (!ChromeTabModifierHeld) {
-        Send("{Ctrl Down}{Shift Down}")
-        ChromeTabModifierHeld := true
-    }
-    Send("{Tab}")
-}
+SC03A & Up::HandleCapsTabSwitch(Func("IsChrome"), "Chrome", "previous")
 
 #HotIf
 
@@ -244,28 +217,10 @@ SC03A & m::
 }
 
 ; CapsLock + Down Arrow -> Next tab (Ctrl held, then Tab)
-SC03A & Down::
-{
-    TrackHotkey("CapsLock+Down", "Next Tab")
-    global CursorTabModifierHeld
-    if (!CursorTabModifierHeld) {
-        Send("{Ctrl Down}")
-        CursorTabModifierHeld := true
-    }
-    Send("{Tab}")
-}
+SC03A & Down::HandleCapsTabSwitch(Func("IsCursor"), "Cursor", "next")
 
 ; CapsLock + Up Arrow -> Previous tab (Ctrl+Shift held, then Tab)
-SC03A & Up::
-{
-    TrackHotkey("CapsLock+Up", "Previous Tab")
-    global CursorTabModifierHeld
-    if (!CursorTabModifierHeld) {
-        Send("{Ctrl Down}{Shift Down}")
-        CursorTabModifierHeld := true
-    }
-    Send("{Tab}")
-}
+SC03A & Up::HandleCapsTabSwitch(Func("IsCursor"), "Cursor", "previous")
 
 #HotIf
 
@@ -376,6 +331,58 @@ IsChrome() => WinActive("ahk_exe chrome.exe")
 IsCursor() => WinActive("ahk_exe Cursor.exe")
 IsFileExplorer() => WinActive("ahk_class CabinetWClass") || WinActive("ahk_class ExploreWClass")
 IsVSCode() => WinActive("ahk_exe Code.exe")
+
+HandleCapsTabSwitch(appCheckFn, stateKey, direction) {
+    global TabSwitchStates
+
+    if (!appCheckFn.Call()) {
+        return
+    }
+
+    if (!TabSwitchStates.Has(stateKey)) {
+        TabSwitchStates[stateKey] := { ctrlHeld: false, shiftHeld: false }
+    }
+
+    state := TabSwitchStates[stateKey]
+    isNext := (direction = "next")
+    TrackHotkey(isNext ? "CapsLock+Down" : "CapsLock+Up", isNext ? "Next Tab" : "Previous Tab")
+
+    if (!state.ctrlHeld) {
+        Send("{Ctrl Down}")
+        state.ctrlHeld := true
+    }
+
+    if (isNext) {
+        if (state.shiftHeld) {
+            Send("{Shift Up}")
+            state.shiftHeld := false
+        }
+    } else {
+        if (!state.shiftHeld) {
+            Send("{Shift Down}")
+            state.shiftHeld := true
+        }
+    }
+
+    TabSwitchStates[stateKey] := state
+    Send("{Tab}")
+}
+
+ReleaseTabSwitchModifiers() {
+    global TabSwitchStates
+
+    for stateKey, state in TabSwitchStates {
+        if (state.shiftHeld) {
+            Send("{Shift Up}")
+            state.shiftHeld := false
+        }
+        if (state.ctrlHeld) {
+            Send("{Ctrl Up}")
+            state.ctrlHeld := false
+        }
+        TabSwitchStates[stateKey] := state
+    }
+}
 
 ; COM functions removed - using ribbon commands only
 
