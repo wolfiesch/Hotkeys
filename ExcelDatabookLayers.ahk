@@ -13,9 +13,11 @@
 ; Keep CapsLock off
 SetCapsLockState("AlwaysOff")
 
-; Global variables for sticky tab navigation
-global ChromeTabModifierHeld := false
-global CursorTabModifierHeld := false
+; Global structures for sticky tab navigation
+global TabNavigationState := Map(
+    "Chrome", CreateTabNavigationState(),
+    "Cursor", CreateTabNavigationState()
+)
 
 ; Initialize Status Overlay and Hotkey Tracking
 global StatusOverlay := {
@@ -110,6 +112,63 @@ TrackHotkey(key, description := "") {
     }
 }
 
+CreateTabNavigationState() {
+    return {
+        ctrlHeld: false,
+        shiftHeld: false,
+        directionShift: Map("forward", false, "backward", true),
+        activeDirection: ""
+    }
+}
+
+EnsureCtrlHeld(state) {
+    if (!state.ctrlHeld || !GetKeyState("Ctrl", "P")) {
+        Send("{Ctrl Down}")
+    }
+    state.ctrlHeld := true
+}
+
+EnsureShiftDown(state) {
+    if (!state.shiftHeld || !GetKeyState("Shift", "P")) {
+        Send("{Shift Down}")
+    }
+    state.shiftHeld := true
+}
+
+EnsureShiftUp(state) {
+    Send("{Shift Up}")
+    state.shiftHeld := false
+}
+
+EnsureTabDirection(state, direction) {
+    if (!state.directionShift.Has(direction)) {
+        return
+    }
+
+    requiresShift := state.directionShift[direction]
+    EnsureCtrlHeld(state)
+
+    if (requiresShift) {
+        EnsureShiftDown(state)
+    } else {
+        EnsureShiftUp(state)
+    }
+
+    state.activeDirection := direction
+}
+
+ReleaseTabNavigationState(state) {
+    if (state.shiftHeld || GetKeyState("Shift", "P")) {
+        Send("{Shift Up}")
+    }
+    if (state.ctrlHeld || GetKeyState("Ctrl", "P")) {
+        Send("{Ctrl Up}")
+    }
+    state.ctrlHeld := false
+    state.shiftHeld := false
+    state.activeDirection := ""
+}
+
 ; Initialize the hotkey descriptions now that function is defined
 InitializeHotkeyDescriptions()
 
@@ -123,11 +182,11 @@ SC03A::Return
 ; Release any held modifiers when CapsLock is released
 SC03A up::
 {
-    global ChromeTabModifierHeld, CursorTabModifierHeld
-    if (ChromeTabModifierHeld || CursorTabModifierHeld) {
-        Send("{Shift Up}{Ctrl Up}")
-        ChromeTabModifierHeld := false
-        CursorTabModifierHeld := false
+    global TabNavigationState
+    for , state in TabNavigationState {
+        if (state.ctrlHeld || state.shiftHeld) {
+            ReleaseTabNavigationState(state)
+        }
     }
 }
 
@@ -205,11 +264,9 @@ SetKeyDelay(50, 50)  ; 50ms press duration, 50ms release delay
 SC03A & Down::
 {
     TrackHotkey("CapsLock+Down", "Next Tab")
-    global ChromeTabModifierHeld
-    if (!ChromeTabModifierHeld) {
-        Send("{Ctrl Down}")
-        ChromeTabModifierHeld := true
-    }
+    global TabNavigationState
+    state := TabNavigationState["Chrome"]
+    EnsureTabDirection(state, "forward")
     Send("{Tab}")
 }
 
@@ -217,11 +274,9 @@ SC03A & Down::
 SC03A & Up::
 {
     TrackHotkey("CapsLock+Up", "Previous Tab")
-    global ChromeTabModifierHeld
-    if (!ChromeTabModifierHeld) {
-        Send("{Ctrl Down}{Shift Down}")
-        ChromeTabModifierHeld := true
-    }
+    global TabNavigationState
+    state := TabNavigationState["Chrome"]
+    EnsureTabDirection(state, "backward")
     Send("{Tab}")
 }
 
@@ -247,11 +302,9 @@ SC03A & m::
 SC03A & Down::
 {
     TrackHotkey("CapsLock+Down", "Next Tab")
-    global CursorTabModifierHeld
-    if (!CursorTabModifierHeld) {
-        Send("{Ctrl Down}")
-        CursorTabModifierHeld := true
-    }
+    global TabNavigationState
+    state := TabNavigationState["Cursor"]
+    EnsureTabDirection(state, "forward")
     Send("{Tab}")
 }
 
@@ -259,11 +312,9 @@ SC03A & Down::
 SC03A & Up::
 {
     TrackHotkey("CapsLock+Up", "Previous Tab")
-    global CursorTabModifierHeld
-    if (!CursorTabModifierHeld) {
-        Send("{Ctrl Down}{Shift Down}")
-        CursorTabModifierHeld := true
-    }
+    global TabNavigationState
+    state := TabNavigationState["Cursor"]
+    EnsureTabDirection(state, "backward")
     Send("{Tab}")
 }
 
