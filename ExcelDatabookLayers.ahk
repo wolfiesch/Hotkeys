@@ -1354,111 +1354,111 @@ SC03A & m::Do(() => SetNumberFormat("month"), "Month Format", "CapsLock+M")     
 SC03A & d::Do(() => SetNumberFormat("date"), "Date Format", "CapsLock+D")                   ; Date format
 
 ; ALIGNMENT
-SC03A & F1::Do(() => SetAlignment("left"), "Align Left")                     ; Align Left
-SC03A & F2::Do(() => SetAlignment("center"), "Align Center")                   ; Align Center
-SC03A & F3::Do(() => SetAlignment("right"), "Align Right")                    ; Align Right
-SC03A & F4::Do(() => ToggleWrapText(), "Toggle Wrap Text")                         ; Toggle Wrap
+SC03A & F1::Do(() => SetAlignment("left"), "Align Left", "CapsLock+F1")                     ; Align Left
+SC03A & F2::Do(() => SetAlignment("center"), "Align Center", "CapsLock+F2")                   ; Align Center
+SC03A & F3::Do(() => SetAlignment("right"), "Align Right", "CapsLock+F3")                    ; Align Right
+SC03A & F4::Do(() => ToggleWrapText(), "Toggle Wrap Text", "CapsLock+F4")                         ; Toggle Wrap
 
 ; BORDERS / MACROS
 SC03A & r::                                                                            ; CapsLock+R or CapsLock+Ctrl+R
 {
     if GetKeyState("Ctrl","P") {
-        Do(AutoFitRows, "AutoFit Row Height")
+        Do(AutoFitRows, "AutoFit Row Height", "CapsLock+Ctrl+R")
     } else {
-        Do(() => ApplyRightBorder(), "Apply Right Border")
+        Do(() => ApplyRightBorder(), "Apply Right Border", "CapsLock+R")
     }
 }
-SC03A & b::Do(() => ApplyBottomBorder(), "Apply Bottom Border")                       ; Apply BottomThinBorder macro
-SC03A & o::Do(() => SetBorders("outline"), "Outline Borders")                     ; Outline borders
-SC03A & i::Do(() => SetBorders("inside"), "Inside Borders")                      ; Inside borders
+SC03A & b::Do(() => ApplyBottomBorder(), "Apply Bottom Border", "CapsLock+B")                       ; Apply BottomThinBorder macro
+SC03A & o::Do(() => SetBorders("outline"), "Outline Borders", "CapsLock+O")                     ; Outline borders
+SC03A & i::Do(() => SetBorders("inside"), "Inside Borders", "CapsLock+I")                      ; Inside borders
 SC03A & c::                                                                            ; CapsLock+C or CapsLock+Ctrl+C
 {
     if GetKeyState("Ctrl","P") {
-        Do(AutoFitColumns, "AutoFit Column Width")
+        Do(AutoFitColumns, "AutoFit Column Width", "CapsLock+Ctrl+C")
     } else {
-        Do(() => ClearBorders(), "Clear Borders")
+        Do(() => ClearBorders(), "Clear Borders", "CapsLock+C")
     }
 }
-SC03A & y::Do(() => SetBorderLine("top", "double"), "Top Double Border")            ; Top double border
-SC03A & j::Do(() => SetBorderLine("left", "thick"), "Left Thick Border")            ; Left thick border
+SC03A & y::Do(() => SetBorderLine("top", "double"), "Top Double Border", "CapsLock+Y")            ; Top double border
+SC03A & j::Do(() => SetBorderLine("left", "thick"), "Left Thick Border", "CapsLock+J")            ; Left thick border
 ; SC03A & `;:: removed - now used globally for Ctrl+Windows+Alt+T
 
 ; DIVIDERS / SIZING
 SC03A & q::                                                                            ; CapsLock+Q or CapsLock+Ctrl+Q
 {
     if GetKeyState("Ctrl","P") {
-        Do(() => SetRowHeight(5), "Set Row Height 5pt")
+        Do(() => SetRowHeight(5), "Set Row Height 5pt", "CapsLock+Ctrl+Q")
     } else {
-        Do(() => SetColumnWidth(0.5), "Set Column Width")
+        Do(() => SetColumnWidth(0.5), "Set Column Width", "CapsLock+Q")
     }
 }
-SC03A & F5::Do(() => AutoFitColumns(), "AutoFit Columns")                         ; AutoFit Columns
-SC03A & F6::Do(() => AutoFitRows(), "AutoFit Rows")                            ; AutoFit Rows
-SC03A & F11::Do(IncreaseIndent, "Increase Indent")                                ; Increase indent
-SC03A & F12::Do(DecreaseIndent, "Decrease Indent")                                ; Decrease indent
-SC03A & NumpadDot::Do(AddDecimalPlace, "Add Decimal Place")                         ; Add decimal place
-SC03A & Numpad0::Do(RemoveDecimalPlace, "Remove Decimal Place")                        ; Remove decimal place
+SC03A & F5::Do(() => AutoFitColumns(), "AutoFit Columns", "CapsLock+F5")                         ; AutoFit Columns
+SC03A & F6::Do(() => AutoFitRows(), "AutoFit Rows", "CapsLock+F6")                            ; AutoFit Rows
+SC03A & F11::Do(IncreaseIndent, "Increase Indent", "CapsLock+F11")                                ; Increase indent
+SC03A & F12::Do(DecreaseIndent, "Decrease Indent", "CapsLock+F12")                                ; Decrease indent
+SC03A & NumpadDot::Do(AddDecimalPlace, "Add Decimal Place", "CapsLock+Numpad.")                         ; Add decimal place
+SC03A & Numpad0::Do(RemoveDecimalPlace, "Remove Decimal Place", "CapsLock+Numpad0")                        ; Remove decimal place
 
 ; NAVIGATION
-SC03A & [::Do(() => JumpToPrevDivider(), "Prev Divider")                       ; Prev divider
-SC03A & ]::Do(() => JumpToNextDivider(), "Next Divider")                       ; Next divider
-SC03A & =::Do(() => JumpToBlockEdge("first"), "First Block Edge")                  ; First block edge
-SC03A & -::Do(() => JumpToBlockEdge("last"), "Last Block Edge")                   ; Last block edge
-SC03A & ,::Do(() => Send("^{PgUp}"), "Previous Sheet")                           ; Previous sheet
-SC03A & .::Do(() => Send("^{PgDn}"), "Next Sheet")                           ; Next sheet
+SC03A & [::Do(() => JumpToPrevDivider(), "Prev Divider", "CapsLock+[")                       ; Prev divider
+SC03A & ]::Do(() => JumpToNextDivider(), "Next Divider", "CapsLock+]")                       ; Next divider
+SC03A & =::Do(() => JumpToBlockEdge("first"), "First Block Edge", "CapsLock+=")                  ; First block edge
+SC03A & -::Do(() => JumpToBlockEdge("last"), "Last Block Edge", "CapsLock+-")                   ; Last block edge
+SC03A & ,::Do(() => Send("^{PgUp}"), "Previous Sheet", "CapsLock+,")                           ; Previous sheet
+SC03A & .::Do(() => Send("^{PgDn}"), "Next Sheet", "CapsLock+.")                           ; Next sheet
 SC03A & g::
 {
     if GetKeyState("Ctrl","P") {
-        Do(GroupAndCollapseSelection, "Group and Collapse")
+        Do(GroupAndCollapseSelection, "Group and Collapse", "CapsLock+Ctrl+G")
     } else {
-        Do(() => Send("^g"), "Go To")
+        Do(() => Send("^g"), "Go To", "CapsLock+G")
     }
 }
-SC03A & 8::Do(() => Send("^+8"), "Current Region")                               ; Current Region
+SC03A & 8::Do(() => Send("^+8"), "Current Region", "CapsLock+8")                               ; Current Region
 SC03A & h::Do(() => Send("^!+h"), "Highlight Cell", "CapsLock+H")                  ; Custom macro Ctrl+Alt+Shift+H
 
 SC03A & Right::
 {
     if GetKeyState("Ctrl","P") {
-        Do(() => Send("{Shift down}{Right 11}{Shift up}"), "Select Right 11")
+        Do(() => Send("{Shift down}{Right 11}{Shift up}"), "Select Right 11", "CapsLock+Ctrl+Right")
     } else if GetKeyState("Shift","P") {
-        Do(() => Send("{Shift down}{Right 11}{Shift up}"), "Select Right 11")
+        Do(() => Send("{Shift down}{Right 11}{Shift up}"), "Select Right 11", "CapsLock+Shift+Right")
     } else {
-        Do(() => Send("{Right 12}"), "Move Right 12")
+        Do(() => Send("{Right 12}"), "Move Right 12", "CapsLock+Right")
     }
 }
 
 SC03A & Left::
 {
     if GetKeyState("Ctrl","P") {
-        Do(() => Send("{Shift down}{Left 11}{Shift up}"), "Select Left 11")
+        Do(() => Send("{Shift down}{Left 11}{Shift up}"), "Select Left 11", "CapsLock+Ctrl+Left")
     } else if GetKeyState("Shift","P") {
-        Do(() => Send("{Shift down}{Left 11}{Shift up}"), "Select Left 11")
+        Do(() => Send("{Shift down}{Left 11}{Shift up}"), "Select Left 11", "CapsLock+Shift+Left")
     } else {
-        Do(() => Send("{Left 12}"), "Move Left 12")
+        Do(() => Send("{Left 12}"), "Move Left 12", "CapsLock+Left")
     }
 }
 
 ; Numpad navigation
-SC03A & Numpad8::Do(() => Send("^{Up}"), "Ctrl+Up")                       ; Ctrl+Arrow Up
-SC03A & Numpad2::Do(() => Send("^{Down}"), "Ctrl+Down")                     ; Ctrl+Arrow Down
-SC03A & Numpad4::Do(() => Send("^{Left}"), "Ctrl+Left")                     ; Ctrl+Arrow Left
-SC03A & Numpad6::Do(() => Send("^{Right}"), "Ctrl+Right")                    ; Ctrl+Arrow Right
-SC03A & Numpad7::Do(() => Send("^{Home}"), "Ctrl+Home")                     ; Ctrl+Home (A1)
-SC03A & Numpad9::Do(() => Send("^{End}"), "Ctrl+End")                      ; Ctrl+End
+SC03A & Numpad8::Do(() => Send("^{Up}"), "Ctrl+Up", "CapsLock+Numpad8")                       ; Ctrl+Arrow Up
+SC03A & Numpad2::Do(() => Send("^{Down}"), "Ctrl+Down", "CapsLock+Numpad2")                     ; Ctrl+Arrow Down
+SC03A & Numpad4::Do(() => Send("^{Left}"), "Ctrl+Left", "CapsLock+Numpad4")                     ; Ctrl+Arrow Left
+SC03A & Numpad6::Do(() => Send("^{Right}"), "Ctrl+Right", "CapsLock+Numpad6")                    ; Ctrl+Arrow Right
+SC03A & Numpad7::Do(() => Send("^{Home}"), "Ctrl+Home", "CapsLock+Numpad7")                     ; Ctrl+Home (A1)
+SC03A & Numpad9::Do(() => Send("^{End}"), "Ctrl+End", "CapsLock+Numpad9")                      ; Ctrl+End
 
 ; DATA / CLEANUP
-SC03A & u::Do(() => TrimInPlace(), "Trim In Place")                             ; TRIM
-SC03A & F8::Do(() => CleanInPlace(), "Clean In Place")                           ; CLEAN
-SC03A & n::Do(() => CoerceToNumber(), "Convert to Number")                          ; Convert to Number
-SC03A & e::Do(() => Send("!de"), "Text to Columns")                               ; Text to Columns
-SC03A & F7::Do(() => Send("^+l"), "Toggle AutoFilter")                              ; Toggle AutoFilter
+SC03A & u::Do(() => TrimInPlace(), "Trim In Place", "CapsLock+U")                             ; TRIM
+SC03A & F8::Do(() => CleanInPlace(), "Clean In Place", "CapsLock+F8")                           ; CLEAN
+SC03A & n::Do(() => CoerceToNumber(), "Convert to Number", "CapsLock+N")                          ; Convert to Number
+SC03A & e::Do(() => Send("!de"), "Text to Columns", "CapsLock+E")                               ; Text to Columns
+SC03A & F7::Do(() => Send("^+l"), "Toggle AutoFilter", "CapsLock+F7")                              ; Toggle AutoFilter
 ; SC03A & F9::Do(() => FreezeAtActiveCell(), "Freeze Panes")                     ; Freeze panes - moved to Ctrl+CapsLock+F
 
 ; CLEARS
-SC03A & z::Do(ClearFormatsSel, "Clear Formats")                                 ; Clear Formats
-SC03A & Backspace::Do(ClearContentsSel, "Clear Contents")                        ; Clear Contents
-SC03A & Delete::Do(ClearAllSel, "Clear All")                                ; Clear All
+SC03A & z::Do(ClearFormatsSel, "Clear Formats", "CapsLock+Z")                                 ; Clear Formats
+SC03A & Backspace::Do(ClearContentsSel, "Clear Contents", "CapsLock+Backspace")                        ; Clear Contents
+SC03A & Delete::Do(ClearAllSel, "Clear All", "CapsLock+Delete")                                ; Clear All
 
 
 #HotIf
