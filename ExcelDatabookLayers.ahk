@@ -364,7 +364,6 @@ HandleCapsTabSwitch(appCheckFn, stateKey, direction) {
         }
     }
 
-    TabSwitchStates[stateKey] := state
     Send("{Tab}")
 }
 
