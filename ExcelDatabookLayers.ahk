@@ -74,6 +74,8 @@ InitializeHotkeyDescriptions() {
     HotkeyDescriptions["CapsLock+Enter"] := "Terminal Here"
     HotkeyDescriptions["CapsLock+Down"] := "Next Tab"
     HotkeyDescriptions["CapsLock+Up"] := "Previous Tab"
+    HotkeyDescriptions["CapsLock+Ctrl+Right"] := "Next Sheet"
+    HotkeyDescriptions["CapsLock+Ctrl+Left"] := "Previous Sheet"
 
     ; Other operations
     HotkeyDescriptions["CapsLock+/"] := "Delete Column"
@@ -1420,7 +1422,7 @@ SC03A & h::Do(() => Send("^!+h"), "Highlight Cell", "CapsLock+H")               
 SC03A & Right::
 {
     if GetKeyState("Ctrl","P") {
-        Do(() => Send("{Shift down}{Right 11}{Shift up}"), "Select Right 11", "CapsLock+Ctrl+Right")
+        Do(() => Send("^{PgDn}"), "Next Sheet", "CapsLock+Ctrl+Right")
     } else if GetKeyState("Shift","P") {
         Do(() => Send("{Shift down}{Right 11}{Shift up}"), "Select Right 11", "CapsLock+Shift+Right")
     } else {
@@ -1431,7 +1433,7 @@ SC03A & Right::
 SC03A & Left::
 {
     if GetKeyState("Ctrl","P") {
-        Do(() => Send("{Shift down}{Left 11}{Shift up}"), "Select Left 11", "CapsLock+Ctrl+Left")
+        Do(() => Send("^{PgUp}"), "Previous Sheet", "CapsLock+Ctrl+Left")
     } else if GetKeyState("Shift","P") {
         Do(() => Send("{Shift down}{Left 11}{Shift up}"), "Select Left 11", "CapsLock+Shift+Left")
     } else {
