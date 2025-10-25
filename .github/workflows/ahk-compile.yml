@@ -1,0 +1,59 @@
+name: AHK Compile Check
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  compile-ahk:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download AutoHotkey v2
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $version = '2.0.16'
+          $tag = "v$version"
+          $uri = "https://github.com/AutoHotkey/AutoHotkey/releases/download/$tag/AutoHotkey_$version.zip"
+          $outFile = Join-Path $env:RUNNER_TEMP 'AutoHotkey.zip'
+          Invoke-WebRequest -Uri $uri -OutFile $outFile
+          $destination = Join-Path $env:RUNNER_TEMP 'AutoHotkey'
+          Expand-Archive -Path $outFile -DestinationPath $destination -Force
+          $root = Join-Path $destination "AutoHotkey_$version"
+          if (-not (Test-Path $root)) {
+            Write-Error "Expected AutoHotkey root folder '$root' was not found."
+          }
+          "$root" | Out-File -FilePath (Join-Path $env:RUNNER_TEMP 'ahk-root.txt') -Encoding utf8
+
+      - name: Compile ExcelDatabookLayers.ahk
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $rootFile = Join-Path $env:RUNNER_TEMP 'ahk-root.txt'
+          if (-not (Test-Path $rootFile)) {
+            Write-Error "AutoHotkey root metadata not found."
+          }
+          $ahkRoot = Get-Content $rootFile -Raw
+          $compiler = Join-Path $ahkRoot 'Compiler/Ahk2Exe.exe'
+          $base = Join-Path $ahkRoot 'AutoHotkey64.exe'
+          if (-not (Test-Path $compiler)) {
+            Write-Error "Ahk2Exe compiler not found at $compiler."
+          }
+          if (-not (Test-Path $base)) {
+            Write-Error "AutoHotkey base executable not found at $base."
+          }
+          $script = Resolve-Path 'ExcelDatabookLayers.ahk'
+          $output = Join-Path $env:RUNNER_TEMP 'ExcelDatabookLayers.exe'
+          & $compiler '/in' $script '/out' $output '/base' $base '/silent'
+          if ($LASTEXITCODE -ne 0) {
+            Write-Error "Ahk2Exe reported a non-zero exit code $LASTEXITCODE."
+          }
+          if (-not (Test-Path $output)) {
+            Write-Error "Expected compiled output was not produced."
+          }
+          Write-Host "Successfully compiled $script to $output"
