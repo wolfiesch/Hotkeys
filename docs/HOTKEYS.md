@@ -33,6 +33,7 @@ Layers are activated by **holding down** CapsLock combinations:
 | `NumpadDiv` | Divide operation |
 | `NumpadAdd` | Add operation |
 | `NumpadSub` | Subtract operation |
+| `Down Arrow` | Propogat paste (Ctrl+Shift+Right, Ctrl+Shift+Down, Shift+Up, Paste Formulas + Format) |
 
 ## FORMAT Layer - Shift+CapsLock held down
 
