@@ -52,6 +52,7 @@ This AutoHotkey script provides Excel and PowerPoint automation through layered 
 | `CapsLock+Numpad*` | Clear Filter | Alt+H → S → C |
 | `CapsLock+Numpad+` | Paste Add | Paste Special with Add operation |
 | `CapsLock+Numpad-` | Paste Subtract | Paste Special with Subtract operation |
+| `CapsLock+Ctrl+Down` | Propogat Paste | Ctrl+Shift+Right → Ctrl+Shift+Down → Shift+Up → Paste Formulas + Format |
 
 ### FORMAT Operations
 
@@ -153,6 +154,7 @@ This AutoHotkey script provides Excel and PowerPoint automation through layered 
 | `CapsLock+Ctrl+R` | AutoFit Row Height | Alt+H → O → A |
 | `CapsLock+Ctrl+C` | AutoFit Column Width | Alt+H → O → I |
 | `CapsLock+Ctrl+Q` | Set Row Height | Alt+H → O → H → 5 → Enter |
+| `CapsLock+Ctrl+Down` | Propogat Paste | Ctrl+Shift+Right → Ctrl+Shift+Down → Shift+Up → Paste Formulas + Format |
 
 **Note**: These combinations are implemented within the main CapsLock layer using conditional logic to detect if Ctrl is also pressed.
 
@@ -164,6 +166,9 @@ This AutoHotkey script provides Excel and PowerPoint automation through layered 
 - **Modified**: Integrated Ctrl modifier detection into existing F, R, and C hotkeys
 - **Modified**: Changed CapsLock+A from Accounting Format to Set Row Height 5pt
 - **Created**: Initial comprehensive documentation of all hotkeys
+
+### 2025-02-06
+- **Added**: CapsLock+Ctrl+Down "Propogat" workflow for directional propagation followed by paste formulas + format
 
 ### Future Updates
 *This section will be updated as hotkeys are added, modified, or removed*
