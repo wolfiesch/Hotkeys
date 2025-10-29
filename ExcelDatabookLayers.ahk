@@ -31,6 +31,18 @@ global StatusOverlay := {
 global HotkeyHistory := []
 global HotkeyDescriptions := Map()
 
+; Shared layer hotkey metadata used for registration and overlay descriptions
+global LayerHotkeyConfig := [
+    {
+        leader: "SC03A",
+        modifiers: ["Ctrl"],
+        key: "f",
+        actionFn: () => FreezeAtActiveCell(),
+        description: "Freeze Panes",
+        contextFn: IsExcel
+    }
+]
+
 ; -----------------------------------------------------------------------------
 ; Hotkey Tracking and Description System - Must be defined before use
 ; -----------------------------------------------------------------------------
@@ -42,7 +54,6 @@ InitializeHotkeyDescriptions() {
     ; PASTE operations
     HotkeyDescriptions["CapsLock+V"] := "Paste Values"
     HotkeyDescriptions["CapsLock+F"] := "Paste Formulas"
-    HotkeyDescriptions["CapsLock+Ctrl+F"] := "Freeze Panes"
     HotkeyDescriptions["CapsLock+T"] := "Paste Formats"
     HotkeyDescriptions["CapsLock+W"] := "Column Widths"
     HotkeyDescriptions["CapsLock+S"] := "Formulas + Format"
@@ -111,8 +122,96 @@ TrackHotkey(key, description := "") {
     }
 }
 
+; -----------------------------------------------------------------------------
+; Layer Hotkey Registration Helpers
+; -----------------------------------------------------------------------------
+
+RegisterLayerHotkeys(config) {
+    ; Dynamically bind layer-aware hotkeys defined in the shared metadata.
+    ; The helper also keeps HotkeyDescriptions synchronized so the overlay
+    ; reflects every registered shortcut without redundant manual entries.
+    global HotkeyDescriptions
+
+    if !IsObject(config) {
+        return
+    }
+
+    for entry in config {
+        ; Build a context predicate that respects the application guard,
+        ; leader state, and any additional modifier requirements.
+        contextPredicate := (*) => (
+            entry.contextFn.Call()
+            && GetKeyState(entry.leader, "P")
+            && AreLayerModifiersActive(entry.modifiers)
+        )
+
+        hotkeyLabel := BuildLayerHotkeyLabel(entry)
+
+        ; Wrap the registered action in Do() so tracking and error handling
+        ; remain consistent with the existing static hotkey definitions.
+        callback := (*) => Do(() => entry.actionFn.Call(), entry.description, hotkeyLabel)
+
+        HotIf(contextPredicate)
+        Hotkey(entry.leader . " & " . entry.key, callback, "On")
+        HotkeyDescriptions[hotkeyLabel] := entry.description
+    }
+
+    ; Reset HotIf to avoid leaking the context to unrelated hotkeys.
+    HotIf()
+}
+
+AreLayerModifiersActive(requiredModifiers) {
+    ; Ensure every required modifier is pressed while allowing the helper to
+    ; succeed when no modifiers are specified in the metadata.
+    if !IsObject(requiredModifiers) || requiredModifiers.Length = 0 {
+        return true
+    }
+
+    for modifier in requiredModifiers {
+        if !GetKeyState(modifier, "P") {
+            return false
+        }
+    }
+
+    return true
+}
+
+BuildLayerHotkeyLabel(entry) {
+    ; Produce a human-readable label (e.g., CapsLock+Ctrl+F) that mirrors the
+    ; existing convention in HotkeyDescriptions for overlay consumption.
+    leaderName := GetLayerLeaderDisplayName(entry.leader)
+    labelParts := [leaderName]
+
+    if IsObject(entry.modifiers) {
+        for modifier in entry.modifiers {
+            labelParts.Push(modifier)
+        }
+    }
+
+    labelParts.Push(StrUpper(entry.key))
+
+    label := ""
+    for index, part in labelParts {
+        label .= (index > 1 ? "+" : "") . part
+    }
+
+    return label
+}
+
+GetLayerLeaderDisplayName(leader) {
+    ; Map scan codes to descriptive names so overlay strings stay friendly.
+    leaderNames := Map("SC03A", "CapsLock")
+
+    if leaderNames.Has(leader) {
+        return leaderNames[leader]
+    }
+
+    return leader
+}
+
 ; Initialize the hotkey descriptions now that function is defined
 InitializeHotkeyDescriptions()
+RegisterLayerHotkeys(LayerHotkeyConfig)
 
 ; Create the overlay GUI
 CreateStatusOverlay()
@@ -1311,13 +1410,12 @@ SC03A & SC027::Send("^#!t")
 
 ; PASTE operations
 SC03A & v::Do(() => PasteSpecial("values"), "Paste Values", "CapsLock+V")                    ; Paste Values
-SC03A & f::                                                                            ; CapsLock+F or CapsLock+Ctrl+F
+SC03A & f::                                                                            ; CapsLock+F
 {
-    if GetKeyState("Ctrl","P") {
-        Do(() => FreezeAtActiveCell(), "Freeze Panes", "CapsLock+Ctrl+F")
-    } else {
-        Do(() => PasteSpecial("formulas"), "Paste Formulas", "CapsLock+F")
+    if GetKeyState("Ctrl", "P") {
+        return
     }
+    Do(() => PasteSpecial("formulas"), "Paste Formulas", "CapsLock+F")
 }
 SC03A & t::Do(() => PasteSpecial("formats"), "Paste Formats", "CapsLock+T")                   ; Paste Formats
 SC03A & w::Do(() => PasteSpecial("colwidths"), "Paste Column Widths", "CapsLock+W")                 ; Paste Column Widths
