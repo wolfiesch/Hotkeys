@@ -420,16 +420,11 @@ NormalizeLayerKeyLabel(key) {
         return StrUpper(key)
     }
 
-    readableNames := Map(
-        "Backspace", "Backspace",
-        "Delete", "Delete",
-        "F7", "F7",
-        "Right", "Right",
-        "Left", "Left"
-    )
+    ; List of known readable key names
+    knownReadableNames := ["Backspace", "Delete", "F7", "Right", "Left"]
 
-    if readableNames.Has(key) {
-        return readableNames[key]
+    if key in knownReadableNames {
+        return key
     }
 
     return key
