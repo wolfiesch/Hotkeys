@@ -31,18 +31,6 @@ global StatusOverlay := {
 global HotkeyHistory := []
 global HotkeyDescriptions := Map()
 
-; Shared layer hotkey metadata used for registration and overlay descriptions
-global LayerHotkeyConfig := [
-    {
-        leader: "SC03A",
-        modifiers: ["Ctrl"],
-        key: "f",
-        actionFn: () => FreezeAtActiveCell(),
-        description: "Freeze Panes",
-        contextFn: IsExcel
-    }
-]
-
 ; -----------------------------------------------------------------------------
 ; Hotkey Tracking and Description System - Must be defined before use
 ; -----------------------------------------------------------------------------
@@ -51,7 +39,7 @@ InitializeHotkeyDescriptions() {
     ; Initialize the map with common hotkey descriptions
     global HotkeyDescriptions
 
-    ; PASTE operations
+    ; CLIPBOARD & PASTE
     HotkeyDescriptions["CapsLock+V"] := "Paste Values"
     HotkeyDescriptions["CapsLock+F"] := "Paste Formulas"
     HotkeyDescriptions["CapsLock+T"] := "Paste Formats"
@@ -60,8 +48,12 @@ InitializeHotkeyDescriptions() {
     HotkeyDescriptions["CapsLock+X"] := "Values Transpose"
     HotkeyDescriptions["CapsLock+L"] := "Paste Link"
     HotkeyDescriptions["CapsLock+P"] := "Paste Special Dialog"
+    HotkeyDescriptions["CapsLock+Numpad+"] := "Paste Add"
+    HotkeyDescriptions["CapsLock+Numpad-"] := "Paste Subtract"
+    HotkeyDescriptions["CapsLock+Numpad/"] := "Toggle Filter"
+    HotkeyDescriptions["CapsLock+Numpad*"] := "Clear Filter"
 
-    ; FORMAT operations
+    ; FORMATTING & STYLING
     HotkeyDescriptions["CapsLock+1"] := "Font Color"
     HotkeyDescriptions["CapsLock+2"] := "Subtotal Format"
     HotkeyDescriptions["CapsLock+3"] := "Major Total Format"
@@ -69,30 +61,83 @@ InitializeHotkeyDescriptions() {
     HotkeyDescriptions["CapsLock+5"] := "Percent Format"
     HotkeyDescriptions["CapsLock+6"] := "Row Height 5pt"
     HotkeyDescriptions["CapsLock+9"] := "General Format"
+    HotkeyDescriptions["CapsLock+A"] := "Row Height 5pt"
     HotkeyDescriptions["CapsLock+K"] := "Number Format"
     HotkeyDescriptions["CapsLock+M"] := "Month Format"
     HotkeyDescriptions["CapsLock+D"] := "Date Format"
 
-    ; ALIGNMENT
+    ; ALIGNMENT & BORDERS
     HotkeyDescriptions["CapsLock+F1"] := "Align Left"
     HotkeyDescriptions["CapsLock+F2"] := "Align Center"
     HotkeyDescriptions["CapsLock+F3"] := "Align Right"
+    HotkeyDescriptions["CapsLock+F4"] := "Toggle Wrap Text"
+    HotkeyDescriptions["CapsLock+R"] := "Apply Right Border"
+    HotkeyDescriptions["CapsLock+B"] := "Apply Bottom Border"
+    HotkeyDescriptions["CapsLock+O"] := "Outline Borders"
+    HotkeyDescriptions["CapsLock+I"] := "Inside Borders"
+    HotkeyDescriptions["CapsLock+C"] := "Clear Borders"
+    HotkeyDescriptions["CapsLock+Y"] := "Top Double Border"
+    HotkeyDescriptions["CapsLock+J"] := "Left Thick Border"
 
-    ; NAVIGATION
-    HotkeyDescriptions["CapsLock+N"] := "Name Manager"
+    ; LAYOUT & SIZING
+    HotkeyDescriptions["CapsLock+Q"] := "Column Width 0.5"
+    HotkeyDescriptions["CapsLock+/"] := "Delete Column"
+    HotkeyDescriptions["CapsLock+F5"] := "AutoFit Columns"
+    HotkeyDescriptions["CapsLock+F6"] := "AutoFit Rows"
+    HotkeyDescriptions["CapsLock+F11"] := "Increase Indent"
+    HotkeyDescriptions["CapsLock+F12"] := "Decrease Indent"
+    HotkeyDescriptions["CapsLock+Numpad."] := "Add Decimal Place"
+    HotkeyDescriptions["CapsLock+Numpad0"] := "Remove Decimal Place"
+
+    ; NAVIGATION & GROUPING
+    HotkeyDescriptions["CapsLock+["] := "Prev Divider"
+    HotkeyDescriptions["CapsLock+]"] := "Next Divider"
+    HotkeyDescriptions["CapsLock+="] := "First Block Edge"
+    HotkeyDescriptions["CapsLock+-"] := "Last Block Edge"
+    HotkeyDescriptions["CapsLock+,"] := "Previous Sheet"
+    HotkeyDescriptions["CapsLock+."] := "Next Sheet"
     HotkeyDescriptions["CapsLock+G"] := "Go To Dialog"
+    HotkeyDescriptions["CapsLock+8"] := "Current Region"
+    HotkeyDescriptions["CapsLock+Right"] := "Move Right 12"
+    HotkeyDescriptions["CapsLock+Left"] := "Move Left 12"
+    HotkeyDescriptions["CapsLock+Ctrl+Right"] := "Next Sheet"
+    HotkeyDescriptions["CapsLock+Ctrl+Left"] := "Previous Sheet"
+    HotkeyDescriptions["CapsLock+Ctrl+G"] := "Group and Collapse"
+
+    ; DATA TOOLS & CLEANUP
+    HotkeyDescriptions["CapsLock+U"] := "Trim In Place"
+    HotkeyDescriptions["CapsLock+F8"] := "Clean In Place"
+    HotkeyDescriptions["CapsLock+N"] := "Convert to Number"
+    HotkeyDescriptions["CapsLock+E"] := "Text to Columns"
+    HotkeyDescriptions["CapsLock+F7"] := "Toggle AutoFilter"
+    HotkeyDescriptions["CapsLock+H"] := "Highlight Cell"
+
+    ; CLEARING & UTILITY
+    HotkeyDescriptions["CapsLock+Z"] := "Clear Formats"
+    HotkeyDescriptions["CapsLock+Backspace"] := "Clear Contents"
+    HotkeyDescriptions["CapsLock+Delete"] := "Clear All"
+    HotkeyDescriptions["CapsLock+Space"] := "Show Help Overlay"
     HotkeyDescriptions["CapsLock+;"] := "Keep On Top"
     HotkeyDescriptions["CapsLock+Enter"] := "Terminal Here"
     HotkeyDescriptions["CapsLock+Down"] := "Next Tab"
     HotkeyDescriptions["CapsLock+Up"] := "Previous Tab"
-    HotkeyDescriptions["CapsLock+Ctrl+Right"] := "Next Sheet"
-    HotkeyDescriptions["CapsLock+Ctrl+Left"] := "Previous Sheet"
 
-    ; Other operations
-    HotkeyDescriptions["CapsLock+/"] := "Delete Column"
+    ; EXTENDED LAYERS (CTRL)
+    HotkeyDescriptions["CapsLock+Ctrl+F"] := "Freeze Panes"
     HotkeyDescriptions["CapsLock+Ctrl+/"] := "Delete Row"
-    HotkeyDescriptions["CapsLock+H"] := "Highlight Cell"
-    HotkeyDescriptions["CapsLock+O"] := "Open File"
+    HotkeyDescriptions["CapsLock+Ctrl+R"] := "AutoFit Row Height"
+    HotkeyDescriptions["CapsLock+Ctrl+C"] := "AutoFit Column Width"
+    HotkeyDescriptions["CapsLock+Ctrl+Q"] := "Set Row Height 5pt"
+
+    ; EXTENDED LAYERS (CTRL+ALT)
+    HotkeyDescriptions["CapsLock+Ctrl+Alt+F"] := "Freeze Top Row"
+    HotkeyDescriptions["CapsLock+Ctrl+Alt+/"] := "Insert Row Above"
+    HotkeyDescriptions["CapsLock+Ctrl+Alt+R"] := "Refresh All Connections"
+    HotkeyDescriptions["CapsLock+Ctrl+Alt+C"] := "Create Table"
+    HotkeyDescriptions["CapsLock+Ctrl+Alt+Q"] := "Column Width 15"
+    HotkeyDescriptions["CapsLock+Ctrl+Alt+G"] := "Ungroup Selection"
+
+    ; CROSS-APPLICATION UTILITIES
     HotkeyDescriptions["Ctrl+Alt+H"] := "Toggle Overlay"
 }
 
@@ -123,95 +168,75 @@ TrackHotkey(key, description := "") {
 }
 
 ; -----------------------------------------------------------------------------
-; Layer Hotkey Registration Helpers
+; Layer Handling Helpers (CapsLock, CapsLock+Ctrl, CapsLock+Ctrl+Alt)
 ; -----------------------------------------------------------------------------
 
-RegisterLayerHotkeys(config) {
-    ; Dynamically bind layer-aware hotkeys defined in the shared metadata.
-    ; The helper also keeps HotkeyDescriptions synchronized so the overlay
-    ; reflects every registered shortcut without redundant manual entries.
-    global HotkeyDescriptions
-
-    if !IsObject(config) {
-        return
-    }
-
-    for entry in config {
-        ; Build a context predicate that respects the application guard,
-        ; leader state, and any additional modifier requirements.
-        contextPredicate := (*) => (
-            entry.contextFn.Call()
-            && GetKeyState(entry.leader, "P")
-            && AreLayerModifiersActive(entry.modifiers)
-        )
-
-        hotkeyLabel := BuildLayerHotkeyLabel(entry)
-
-        ; Wrap the registered action in Do() so tracking and error handling
-        ; remain consistent with the existing static hotkey definitions.
-        callback := (*) => Do(() => entry.actionFn.Call(), entry.description, hotkeyLabel)
-
-        HotIf(contextPredicate)
-        Hotkey(entry.leader . " & " . entry.key, callback, "On")
-        HotkeyDescriptions[hotkeyLabel] := entry.description
-    }
-
-    ; Reset HotIf to avoid leaking the context to unrelated hotkeys.
-    HotIf()
+LayerBinding(action, description, label) {
+    ; Provide a concise way to package layer actions together with overlay text.
+    return Map(
+        "action", action,
+        "description", description,
+        "label", label
+    )
 }
 
-AreLayerModifiersActive(requiredModifiers) {
-    ; Ensure every required modifier is pressed while allowing the helper to
-    ; succeed when no modifiers are specified in the metadata.
-    if !IsObject(requiredModifiers) || requiredModifiers.Length = 0 {
+HandleExcelLayeredHotkey(bindings, options := Map()) {
+    ; Resolve which variant of a layered hotkey should execute based on
+    ; modifier state. This enables three-key layers such as Alt+Ctrl+CapsLock
+    ; without duplicating the branching logic at every binding site.
+    if !IsObject(bindings) {
+        return false
+    }
+
+    ctrlDown := GetKeyState("Ctrl", "P")
+    altDown := GetKeyState("Alt", "P")
+    allowAltSolo := options.Has("allowAltSolo") ? options["allowAltSolo"] : true
+
+    if ctrlDown && altDown && bindings.Has("altCtrl") {
+        if ExecuteLayerBinding(bindings["altCtrl"]) {
+            return true
+        }
+    }
+
+    if ctrlDown && bindings.Has("ctrl") {
+        if ExecuteLayerBinding(bindings["ctrl"]) {
+            return true
+        }
+    }
+
+    if !ctrlDown && altDown && bindings.Has("alt") {
+        if ExecuteLayerBinding(bindings["alt"]) {
+            return true
+        }
+    }
+
+    if (!altDown || allowAltSolo) && bindings.Has("base") {
+        return ExecuteLayerBinding(bindings["base"])
+    }
+
+    return false
+}
+
+ExecuteLayerBinding(binding) {
+    ; Safely execute a binding that was produced by LayerBinding().
+    if !IsObject(binding) {
+        return false
+    }
+
+    action := binding.Has("action") ? binding["action"] : 0
+    description := binding.Has("description") ? binding["description"] : "Unknown Operation"
+    label := binding.Has("label") ? binding["label"] : ""
+
+    if IsObject(action) {
+        Do(action, description, label)
         return true
     }
 
-    for modifier in requiredModifiers {
-        if !GetKeyState(modifier, "P") {
-            return false
-        }
-    }
-
-    return true
-}
-
-BuildLayerHotkeyLabel(entry) {
-    ; Produce a human-readable label (e.g., CapsLock+Ctrl+F) that mirrors the
-    ; existing convention in HotkeyDescriptions for overlay consumption.
-    leaderName := GetLayerLeaderDisplayName(entry.leader)
-    labelParts := [leaderName]
-
-    if IsObject(entry.modifiers) {
-        for modifier in entry.modifiers {
-            labelParts.Push(modifier)
-        }
-    }
-
-    labelParts.Push(StrUpper(entry.key))
-
-    label := ""
-    for index, part in labelParts {
-        label .= (index > 1 ? "+" : "") . part
-    }
-
-    return label
-}
-
-GetLayerLeaderDisplayName(leader) {
-    ; Map scan codes to descriptive names so overlay strings stay friendly.
-    leaderNames := Map("SC03A", "CapsLock")
-
-    if leaderNames.Has(leader) {
-        return leaderNames[leader]
-    }
-
-    return leader
+    return false
 }
 
 ; Initialize the hotkey descriptions now that function is defined
 InitializeHotkeyDescriptions()
-RegisterLayerHotkeys(LayerHotkeyConfig)
 
 ; Create the overlay GUI
 CreateStatusOverlay()
@@ -873,6 +898,16 @@ ClearFilter() {
     ShowHUD("Clear Filter", 800)
 }
 
+RefreshAllConnections() {
+    ; Alt + A -> R -> A (Data ribbon refresh all)
+    Send("!a")      ; Data ribbon
+    Wait(Timing.RIBBON_DELAY)
+    Send("r")       ; Refresh menu
+    Wait(Timing.NAV_DELAY)
+    Send("a")       ; Refresh All
+    ShowHUD("Refresh All Connections", 800)
+}
+
 DeleteSheetColumn() {
     ; Alt + H, D, C (Delete Sheet Columns)
     Send("!h")      ; Home ribbon
@@ -893,11 +928,31 @@ DeleteSheetRow() {
     ShowHUD("Delete Row", 800)
 }
 
+InsertSheetRowAbove() {
+    ; Alt + H, I, R (Insert Sheet Rows)
+    Send("!h")      ; Home ribbon
+    Wait(Timing.RIBBON_DELAY)
+    Send("i")       ; Insert menu
+    Wait(Timing.NAV_DELAY)
+    Send("r")       ; Insert sheet rows
+    ShowHUD("Insert Row Above", 800)
+}
+
 GroupAndCollapseSelection() {
     ; Alt + A, G, G then Alt + A, H to collapse group
     Send("!agg")
     Wait(Timing.DIALOG_DELAY)
     Send("!ah")
+}
+
+UngroupSelection() {
+    ; Alt + A, U, U to remove outlining
+    Send("!a")      ; Data ribbon
+    Wait(Timing.RIBBON_DELAY)
+    Send("u")       ; Ungroup menu
+    Wait(Timing.NAV_DELAY)
+    Send("u")       ; Ungroup selection
+    ShowHUD("Ungroup Selection", 800)
 }
 
 ; -----------------------------------------------------------------------------
@@ -1037,6 +1092,14 @@ SetColumnWidth(width) {
     Send(width)     ; Type the width
     Send("{Enter}")
     ShowHUD("Column Width: " . width, 800)
+}
+
+CreateTableFromSelection() {
+    ; Promote the current selection into an Excel table via Ctrl+T
+    Send("^t")
+    Wait(Timing.DIALOG_DELAY)
+    Send("{Enter}")
+    ShowHUD("Create Table", 800)
 }
 
 InsertSpacerRow() {
@@ -1183,6 +1246,16 @@ FreezeAtActiveCell() {
     Wait(Timing.NAV_DELAY)
     Send("f")           ; Freeze Panes at current position
     ShowHUD("Freeze Panes", 800)
+}
+
+FreezeTopRow() {
+    ; Three-key layer helper for quickly freezing the top row only
+    Send("!w")          ; View ribbon
+    Wait(Timing.RIBBON_DELAY)
+    Send("f")           ; Freeze Panes dropdown
+    Wait(Timing.NAV_DELAY)
+    Send("r")           ; Freeze Top Row command
+    ShowHUD("Freeze Top Row", 800)
 }
 
 ; -----------------------------------------------------------------------------
@@ -1408,14 +1481,18 @@ SC03A & SC027::Send("^#!t")
 ; -----------------------------------------------------------------------------
 #HotIf (IsExcel() && GetKeyState("SC03A","P"))
 
-; PASTE operations
+; Clipboard & Paste
 SC03A & v::Do(() => PasteSpecial("values"), "Paste Values", "CapsLock+V")                    ; Paste Values
-SC03A & f::                                                                            ; CapsLock+F
-{
-    if GetKeyState("Ctrl", "P") {
-        return
-    }
-    Do(() => PasteSpecial("formulas"), "Paste Formulas", "CapsLock+F")
+SC03A & f::{
+    ; Consolidated mapping for Paste/Formulas layer family.
+    ; Base  -> Paste formulas
+    ; Ctrl  -> Freeze panes at the active cell
+    ; Alt+Ctrl -> Freeze the top row for quick dashboard views
+    HandleExcelLayeredHotkey(Map(
+        "base", LayerBinding(() => PasteSpecial("formulas"), "Paste Formulas", "CapsLock+F"),
+        "ctrl", LayerBinding(Func("FreezeAtActiveCell"), "Freeze Panes", "CapsLock+Ctrl+F"),
+        "altCtrl", LayerBinding(Func("FreezeTopRow"), "Freeze Top Row", "CapsLock+Ctrl+Alt+F")
+    ))
 }
 SC03A & t::Do(() => PasteSpecial("formats"), "Paste Formats", "CapsLock+T")                   ; Paste Formats
 SC03A & w::Do(() => PasteSpecial("colwidths"), "Paste Column Widths", "CapsLock+W")                 ; Paste Column Widths
@@ -1424,28 +1501,31 @@ SC03A & x::Do(() => PasteSpecial("values", Map("transpose", true)), "Paste Value
 SC03A & l::Do(() => PasteLink(), "Paste Link", "CapsLock+L")                               ; Paste Link
 SC03A & p::Do(() => Send("^!v"), "Paste Special Dialog", "CapsLock+P")                               ; Paste Special dialog
 
-; Numpad operations
-SC03A & /::
-{
-    if GetKeyState("Ctrl","P") {
-        Do(DeleteSheetRow, "Delete Row", "CapsLock+Ctrl+/")
-    } else {
-        Do(DeleteSheetColumn, "Delete Column", "CapsLock+/")
-    }
+; Clipboard Operations (Numpad)
+SC03A & /::{
+    ; Structural edits mapped to the slash key family.
+    ; Base  -> Delete column
+    ; Ctrl  -> Delete row
+    ; Alt+Ctrl -> Insert a new row above selection
+    HandleExcelLayeredHotkey(Map(
+        "base", LayerBinding(Func("DeleteSheetColumn"), "Delete Column", "CapsLock+/"),
+        "ctrl", LayerBinding(Func("DeleteSheetRow"), "Delete Row", "CapsLock+Ctrl+/"),
+        "altCtrl", LayerBinding(Func("InsertSheetRowAbove"), "Insert Row Above", "CapsLock+Ctrl+Alt+/")
+    ))
 }
 SC03A & NumpadDiv::Do(() => ToggleFilter(), "Toggle Filter", "CapsLock+Numpad/")                    ; Toggle Filter (Alt+H+S+F)
 SC03A & NumpadMult::Do(() => ClearFilter(), "Clear Filter", "CapsLock+Numpad*")                      ; Clear Filter (Alt+H+S+C)
 SC03A & NumpadAdd::Do(() => PasteOperation("add"), "Paste Add", "CapsLock+Numpad+")             ; Paste Operation Add
 SC03A & NumpadSub::Do(() => PasteOperation("subtract"), "Paste Subtract", "CapsLock+Numpad-")        ; Paste Operation Subtract
 
-; FORMAT - Row types
+; Formatting & Styling - Row Types
 SC03A & 1::Do(() => Send("^!+1"), "Font Color", "CapsLock+1")                       ; Custom font color macro
 SC03A & 2::Do(() => ClassifySubtotal(), "Subtotal Format", "CapsLock+2")                        ; Subtotal
 SC03A & 3::Do(() => ClassifyMajorTotal(), "Major Total Format", "CapsLock+3")                      ; Major total
 SC03A & 4::Do(() => ClassifyGrandTotal(), "Grand Total Format", "CapsLock+4")                      ; Grand total
 SC03A & 6::Do(() => SetRowHeight(5), "Row Height 5pt", "CapsLock+6")                           ; Row height 5pt
 
-; FORMAT - Number formats
+; Formatting & Styling - Number Formats
 SC03A & 9::Do(() => SetNumberFormat("general"), "General Format", "CapsLock+9")                ; General format
 SC03A & a::Do(() => SetRowHeight(5), "Row Height 5pt", "CapsLock+A")                           ; Row height 5pt
 SC03A & k::Do(() => Send("^!+k"), "Number Format", "CapsLock+K")                    ; Custom number format macro
@@ -1453,44 +1533,53 @@ SC03A & 5::Do(() => SetNumberFormat("percent"), "Percent Format", "CapsLock+5") 
 SC03A & m::Do(() => SetNumberFormat("month"), "Month Format", "CapsLock+M")                  ; Month format
 SC03A & d::Do(() => SetNumberFormat("date"), "Date Format", "CapsLock+D")                   ; Date format
 
-; ALIGNMENT
+; Alignment & Wrapping
 SC03A & F1::Do(() => SetAlignment("left"), "Align Left", "CapsLock+F1")                     ; Align Left
 SC03A & F2::Do(() => SetAlignment("center"), "Align Center", "CapsLock+F2")                   ; Align Center
 SC03A & F3::Do(() => SetAlignment("right"), "Align Right", "CapsLock+F3")                    ; Align Right
 SC03A & F4::Do(() => ToggleWrapText(), "Toggle Wrap Text", "CapsLock+F4")                         ; Toggle Wrap
 
-; BORDERS / MACROS
-SC03A & r::                                                                            ; CapsLock+R or CapsLock+Ctrl+R
-{
-    if GetKeyState("Ctrl","P") {
-        Do(AutoFitRows, "AutoFit Row Height", "CapsLock+Ctrl+R")
-    } else {
-        Do(() => ApplyRightBorder(), "Apply Right Border", "CapsLock+R")
-    }
+; Borders & Macros
+SC03A & r::{
+    ; Border/row utilities consolidated on the R key.
+    ; Base  -> Apply right border
+    ; Ctrl  -> AutoFit row height
+    ; Alt+Ctrl -> Refresh all data connections
+    HandleExcelLayeredHotkey(Map(
+        "base", LayerBinding(() => ApplyRightBorder(), "Apply Right Border", "CapsLock+R"),
+        "ctrl", LayerBinding(Func("AutoFitRows"), "AutoFit Row Height", "CapsLock+Ctrl+R"),
+        "altCtrl", LayerBinding(Func("RefreshAllConnections"), "Refresh All Connections", "CapsLock+Ctrl+Alt+R")
+    ))
 }
 SC03A & b::Do(() => ApplyBottomBorder(), "Apply Bottom Border", "CapsLock+B")                       ; Apply BottomThinBorder macro
 SC03A & o::Do(() => SetBorders("outline"), "Outline Borders", "CapsLock+O")                     ; Outline borders
 SC03A & i::Do(() => SetBorders("inside"), "Inside Borders", "CapsLock+I")                      ; Inside borders
-SC03A & c::                                                                            ; CapsLock+C or CapsLock+Ctrl+C
-{
-    if GetKeyState("Ctrl","P") {
-        Do(AutoFitColumns, "AutoFit Column Width", "CapsLock+Ctrl+C")
-    } else {
-        Do(() => ClearBorders(), "Clear Borders", "CapsLock+C")
-    }
+SC03A & c::{
+    ; Column-focused bindings collected under the C key.
+    ; Base  -> Clear borders
+    ; Ctrl  -> AutoFit column width
+    ; Alt+Ctrl -> Promote selection to an Excel table
+    HandleExcelLayeredHotkey(Map(
+        "base", LayerBinding(() => ClearBorders(), "Clear Borders", "CapsLock+C"),
+        "ctrl", LayerBinding(Func("AutoFitColumns"), "AutoFit Column Width", "CapsLock+Ctrl+C"),
+        "altCtrl", LayerBinding(Func("CreateTableFromSelection"), "Create Table", "CapsLock+Ctrl+Alt+C")
+    ))
 }
 SC03A & y::Do(() => SetBorderLine("top", "double"), "Top Double Border", "CapsLock+Y")            ; Top double border
 SC03A & j::Do(() => SetBorderLine("left", "thick"), "Left Thick Border", "CapsLock+J")            ; Left thick border
 ; SC03A & `;:: removed - now used globally for Ctrl+Windows+Alt+T
 
-; DIVIDERS / SIZING
-SC03A & q::                                                                            ; CapsLock+Q or CapsLock+Ctrl+Q
-{
-    if GetKeyState("Ctrl","P") {
-        Do(() => SetRowHeight(5), "Set Row Height 5pt", "CapsLock+Ctrl+Q")
-    } else {
-        Do(() => SetColumnWidth(0.5), "Set Column Width", "CapsLock+Q")
-    }
+; Layout & Sizing
+SC03A & q::{
+    ; Dimension presets aligned to the Q key.
+    ; Base  -> Column width 0.5
+    ; Ctrl  -> Row height 5pt
+    ; Alt+Ctrl -> Column width 15 (standard reporting width)
+    HandleExcelLayeredHotkey(Map(
+        "base", LayerBinding(() => SetColumnWidth(0.5), "Column Width 0.5", "CapsLock+Q"),
+        "ctrl", LayerBinding(() => SetRowHeight(5), "Set Row Height 5pt", "CapsLock+Ctrl+Q"),
+        "altCtrl", LayerBinding(() => SetColumnWidth(15), "Column Width 15", "CapsLock+Ctrl+Alt+Q")
+    ))
 }
 SC03A & F5::Do(() => AutoFitColumns(), "AutoFit Columns", "CapsLock+F5")                         ; AutoFit Columns
 SC03A & F6::Do(() => AutoFitRows(), "AutoFit Rows", "CapsLock+F6")                            ; AutoFit Rows
@@ -1499,20 +1588,23 @@ SC03A & F12::Do(DecreaseIndent, "Decrease Indent", "CapsLock+F12")              
 SC03A & NumpadDot::Do(AddDecimalPlace, "Add Decimal Place", "CapsLock+Numpad.")                         ; Add decimal place
 SC03A & Numpad0::Do(RemoveDecimalPlace, "Remove Decimal Place", "CapsLock+Numpad0")                        ; Remove decimal place
 
-; NAVIGATION
+; Navigation & Grouping
 SC03A & [::Do(() => JumpToPrevDivider(), "Prev Divider", "CapsLock+[")                       ; Prev divider
 SC03A & ]::Do(() => JumpToNextDivider(), "Next Divider", "CapsLock+]")                       ; Next divider
 SC03A & =::Do(() => JumpToBlockEdge("first"), "First Block Edge", "CapsLock+=")                  ; First block edge
 SC03A & -::Do(() => JumpToBlockEdge("last"), "Last Block Edge", "CapsLock+-")                   ; Last block edge
 SC03A & ,::Do(() => Send("^{PgUp}"), "Previous Sheet", "CapsLock+,")                           ; Previous sheet
 SC03A & .::Do(() => Send("^{PgDn}"), "Next Sheet", "CapsLock+.")                           ; Next sheet
-SC03A & g::
-{
-    if GetKeyState("Ctrl","P") {
-        Do(GroupAndCollapseSelection, "Group and Collapse", "CapsLock+Ctrl+G")
-    } else {
-        Do(() => Send("^g"), "Go To", "CapsLock+G")
-    }
+SC03A & g::{
+    ; Navigation/grouping shortcuts mapped to the G key.
+    ; Base  -> Go To dialog
+    ; Ctrl  -> Group and collapse selection
+    ; Alt+Ctrl -> Ungroup current outline level
+    HandleExcelLayeredHotkey(Map(
+        "base", LayerBinding(() => Send("^g"), "Go To", "CapsLock+G"),
+        "ctrl", LayerBinding(Func("GroupAndCollapseSelection"), "Group and Collapse", "CapsLock+Ctrl+G"),
+        "altCtrl", LayerBinding(Func("UngroupSelection"), "Ungroup Selection", "CapsLock+Ctrl+Alt+G")
+    ))
 }
 SC03A & 8::Do(() => Send("^+8"), "Current Region", "CapsLock+8")                               ; Current Region
 SC03A & h::Do(() => Send("^!+h"), "Highlight Cell", "CapsLock+H")                  ; Custom macro Ctrl+Alt+Shift+H
@@ -1539,7 +1631,7 @@ SC03A & Left::
     }
 }
 
-; Numpad navigation
+; Navigation - Numpad Movement
 SC03A & Numpad8::Do(() => Send("^{Up}"), "Ctrl+Up", "CapsLock+Numpad8")                       ; Ctrl+Arrow Up
 SC03A & Numpad2::Do(() => Send("^{Down}"), "Ctrl+Down", "CapsLock+Numpad2")                     ; Ctrl+Arrow Down
 SC03A & Numpad4::Do(() => Send("^{Left}"), "Ctrl+Left", "CapsLock+Numpad4")                     ; Ctrl+Arrow Left
@@ -1547,7 +1639,7 @@ SC03A & Numpad6::Do(() => Send("^{Right}"), "Ctrl+Right", "CapsLock+Numpad6")   
 SC03A & Numpad7::Do(() => Send("^{Home}"), "Ctrl+Home", "CapsLock+Numpad7")                     ; Ctrl+Home (A1)
 SC03A & Numpad9::Do(() => Send("^{End}"), "Ctrl+End", "CapsLock+Numpad9")                      ; Ctrl+End
 
-; DATA / CLEANUP
+; Data Tools & Cleanup
 SC03A & u::Do(() => TrimInPlace(), "Trim In Place", "CapsLock+U")                             ; TRIM
 SC03A & F8::Do(() => CleanInPlace(), "Clean In Place", "CapsLock+F8")                           ; CLEAN
 SC03A & n::Do(() => CoerceToNumber(), "Convert to Number", "CapsLock+N")                          ; Convert to Number
@@ -1555,7 +1647,7 @@ SC03A & e::Do(() => Send("!de"), "Text to Columns", "CapsLock+E")               
 SC03A & F7::Do(() => Send("^+l"), "Toggle AutoFilter", "CapsLock+F7")                              ; Toggle AutoFilter
 ; SC03A & F9::Do(() => FreezeAtActiveCell(), "Freeze Panes")                     ; Freeze panes - moved to Ctrl+CapsLock+F
 
-; CLEARS
+; Clearing
 SC03A & z::Do(ClearFormatsSel, "Clear Formats", "CapsLock+Z")                                 ; Clear Formats
 SC03A & Backspace::Do(ClearContentsSel, "Clear Contents", "CapsLock+Backspace")                        ; Clear Contents
 SC03A & Delete::Do(ClearAllSel, "Clear All", "CapsLock+Delete")                                ; Clear All
