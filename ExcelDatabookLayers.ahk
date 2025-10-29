@@ -61,22 +61,32 @@ InitializeHotkeyDescriptions() {
     HotkeyDescriptions["CapsLock+L"] := "Paste Link"
     HotkeyDescriptions["CapsLock+P"] := "Paste Special Dialog"
 
-    ; FORMAT operations
-    HotkeyDescriptions["CapsLock+1"] := "Font Color"
-    HotkeyDescriptions["CapsLock+2"] := "Subtotal Format"
-    HotkeyDescriptions["CapsLock+3"] := "Major Total Format"
-    HotkeyDescriptions["CapsLock+4"] := "Grand Total Format"
-    HotkeyDescriptions["CapsLock+5"] := "Percent Format"
-    HotkeyDescriptions["CapsLock+6"] := "Row Height 5pt"
-    HotkeyDescriptions["CapsLock+9"] := "General Format"
-    HotkeyDescriptions["CapsLock+K"] := "Number Format"
-    HotkeyDescriptions["CapsLock+M"] := "Month Format"
-    HotkeyDescriptions["CapsLock+D"] := "Date Format"
-
-    ; ALIGNMENT
-    HotkeyDescriptions["CapsLock+F1"] := "Align Left"
-    HotkeyDescriptions["CapsLock+F2"] := "Align Center"
-    HotkeyDescriptions["CapsLock+F3"] := "Align Right"
+    ; FORMATTING layer (CapsLock+Ctrl+Alt)
+    HotkeyDescriptions["CapsLock+Ctrl+Alt+1"] := "General Format"
+    HotkeyDescriptions["CapsLock+Ctrl+Alt+2"] := "Accounting Format"
+    HotkeyDescriptions["CapsLock+Ctrl+Alt+3"] := "Thousands Format"
+    HotkeyDescriptions["CapsLock+Ctrl+Alt+4"] := "Percent Format"
+    HotkeyDescriptions["CapsLock+Ctrl+Alt+5"] := "Date Format"
+    HotkeyDescriptions["CapsLock+Ctrl+Alt+6"] := "Month Format"
+    HotkeyDescriptions["CapsLock+Ctrl+Alt+A"] := "Subtotal Format"
+    HotkeyDescriptions["CapsLock+Ctrl+Alt+S"] := "Major Total Format"
+    HotkeyDescriptions["CapsLock+Ctrl+Alt+D"] := "Grand Total Format"
+    HotkeyDescriptions["CapsLock+Ctrl+Alt+F"] := "Font Color"
+    HotkeyDescriptions["CapsLock+Ctrl+Alt+Q"] := "Outline Borders"
+    HotkeyDescriptions["CapsLock+Ctrl+Alt+W"] := "Inside Borders"
+    HotkeyDescriptions["CapsLock+Ctrl+Alt+E"] := "Clear Borders"
+    HotkeyDescriptions["CapsLock+Ctrl+Alt+B"] := "Bottom Border"
+    HotkeyDescriptions["CapsLock+Ctrl+Alt+R"] := "Right Border"
+    HotkeyDescriptions["CapsLock+Ctrl+Alt+T"] := "Top Double Border"
+    HotkeyDescriptions["CapsLock+Ctrl+Alt+Y"] := "Left Thick Border"
+    HotkeyDescriptions["CapsLock+Ctrl+Alt+F1"] := "Align Left"
+    HotkeyDescriptions["CapsLock+Ctrl+Alt+F2"] := "Align Center"
+    HotkeyDescriptions["CapsLock+Ctrl+Alt+F3"] := "Align Right"
+    HotkeyDescriptions["CapsLock+Ctrl+Alt+F4"] := "Toggle Wrap Text"
+    HotkeyDescriptions["CapsLock+Ctrl+Alt+F11"] := "Increase Indent"
+    HotkeyDescriptions["CapsLock+Ctrl+Alt+F12"] := "Decrease Indent"
+    HotkeyDescriptions["CapsLock+Ctrl+Alt+Numpad."] := "Add Decimal Place"
+    HotkeyDescriptions["CapsLock+Ctrl+Alt+Numpad0"] := "Remove Decimal Place"
 
     ; NAVIGATION
     HotkeyDescriptions["CapsLock+N"] := "Name Manager"
@@ -91,6 +101,7 @@ InitializeHotkeyDescriptions() {
     ; Other operations
     HotkeyDescriptions["CapsLock+/"] := "Delete Column"
     HotkeyDescriptions["CapsLock+Ctrl+/"] := "Delete Row"
+    HotkeyDescriptions["CapsLock+Ctrl+Shift+Q"] := "Set Column Width"
     HotkeyDescriptions["CapsLock+H"] := "Highlight Cell"
     HotkeyDescriptions["CapsLock+O"] := "Open File"
     HotkeyDescriptions["Ctrl+Alt+H"] := "Toggle Overlay"
@@ -1388,12 +1399,11 @@ ClearAllSel() {
 ; HELP - Global help system showing Excel-specific shortcuts
 SC03A & Space::{
     helpText := "GLOBAL: semicolon->Ctrl+Windows+Alt+T | Ctrl+Alt+H->Toggle Overlay"
-    helpText .= Chr(10) . "PASTE: v,f,t,w,s,x,l,p + Numpad+ -"
-    helpText .= Chr(10) . "FILTER: Numpad/ (Toggle) Numpad* (Clear)"
-    helpText .= Chr(10) . "DELETE: / (Ctrl=Row)"
-    helpText .= Chr(10) . "FORMAT: 1,2,3,4,6 + 9,a,k,5,m,d + F1-F4 + r,b,o,i,c,y,j + q,F5,F6,F11,F12 + Numpad.,0"
-    helpText .= Chr(10) . "NAV: [,],=,-,.,,g,8,h,Right,Left + Numpad8,2,4,6,7,9"
-    helpText .= Chr(10) . "DATA: u,F8,n,e,F7,F9 + z,Backspace,Delete"
+    helpText .= Chr(10) . "Caps ➜ Paste & Data: v,f,t,w,s,x,l,p,/,+,-,Numpad ops"
+    helpText .= Chr(10) . "Caps ➜ Navigation: [,],=,-,.,,g,8,h,Arrow keys, Numpad 8/2/4/6/7/9"
+    helpText .= Chr(10) . "Caps+Ctrl ➜ Layout: /(Row delete), r,c,q,g,Arrow sheet jumps"
+    helpText .= Chr(10) . "Caps+Ctrl+Alt ➜ Formatting: 1-6 (number styles), A/S/D/F (row styles + font), Q-W-E-R-T-Y (borders), F1-F4 (align), F11/F12 (indent), Numpad./0"
+    helpText .= Chr(10) . "DATA: u,F8,n,e,F7 + z,Backspace,Delete"
     helpText .= Chr(10) . "Note: Excel-specific hotkeys only work in Excel"
     ShowOSD("CAPSLOCK LAYER - EXCEL SHORTCUTS", helpText, 2500, "top-center", 720)
 }
@@ -1404,9 +1414,51 @@ SC03A & SC027::Send("^#!t")
 #HotIf
 
 ; -----------------------------------------------------------------------------
+; Excel CapsLock+Ctrl+Alt Formatting Layer - grouped styling shortcuts
+; -----------------------------------------------------------------------------
+#HotIf (IsExcel() && GetKeyState("SC03A","P") && GetKeyState("Ctrl","P") && GetKeyState("Alt","P"))
+
+; NUMBER FORMATS
+SC03A & 1::Do(() => SetNumberFormat("general"), "General Format", "CapsLock+Ctrl+Alt+1")
+SC03A & 2::Do(() => SetNumberFormat("accounting"), "Accounting Format", "CapsLock+Ctrl+Alt+2")
+SC03A & 3::Do(() => SetNumberFormat("thousands"), "Thousands Format", "CapsLock+Ctrl+Alt+3")
+SC03A & 4::Do(() => SetNumberFormat("percent"), "Percent Format", "CapsLock+Ctrl+Alt+4")
+SC03A & 5::Do(() => SetNumberFormat("date"), "Date Format", "CapsLock+Ctrl+Alt+5")
+SC03A & 6::Do(() => SetNumberFormat("month"), "Month Format", "CapsLock+Ctrl+Alt+6")
+
+; ROW STYLE MACROS
+SC03A & a::Do(() => ClassifySubtotal(), "Subtotal Format", "CapsLock+Ctrl+Alt+A")
+SC03A & s::Do(() => ClassifyMajorTotal(), "Major Total Format", "CapsLock+Ctrl+Alt+S")
+SC03A & d::Do(() => ClassifyGrandTotal(), "Grand Total Format", "CapsLock+Ctrl+Alt+D")
+SC03A & f::Do(() => Send("^!+1"), "Font Color", "CapsLock+Ctrl+Alt+F")
+
+; BORDER CONTROLS
+SC03A & q::Do(() => SetBorders("outline"), "Outline Borders", "CapsLock+Ctrl+Alt+Q")
+SC03A & w::Do(() => SetBorders("inside"), "Inside Borders", "CapsLock+Ctrl+Alt+W")
+SC03A & e::Do(() => ClearBorders(), "Clear Borders", "CapsLock+Ctrl+Alt+E")
+SC03A & b::Do(() => ApplyBottomBorder(), "Bottom Border", "CapsLock+Ctrl+Alt+B")
+SC03A & r::Do(() => ApplyRightBorder(), "Right Border", "CapsLock+Ctrl+Alt+R")
+SC03A & t::Do(() => SetBorderLine("top", "double"), "Top Double Border", "CapsLock+Ctrl+Alt+T")
+SC03A & y::Do(() => SetBorderLine("left", "thick"), "Left Thick Border", "CapsLock+Ctrl+Alt+Y")
+
+; ALIGNMENT & INDENTATION
+SC03A & F1::Do(() => SetAlignment("left"), "Align Left", "CapsLock+Ctrl+Alt+F1")
+SC03A & F2::Do(() => SetAlignment("center"), "Align Center", "CapsLock+Ctrl+Alt+F2")
+SC03A & F3::Do(() => SetAlignment("right"), "Align Right", "CapsLock+Ctrl+Alt+F3")
+SC03A & F4::Do(() => ToggleWrapText(), "Toggle Wrap Text", "CapsLock+Ctrl+Alt+F4")
+SC03A & F11::Do(IncreaseIndent, "Increase Indent", "CapsLock+Ctrl+Alt+F11")
+SC03A & F12::Do(DecreaseIndent, "Decrease Indent", "CapsLock+Ctrl+Alt+F12")
+
+; DECIMAL ADJUSTMENTS
+SC03A & NumpadDot::Do(AddDecimalPlace, "Add Decimal Place", "CapsLock+Ctrl+Alt+Numpad.")
+SC03A & Numpad0::Do(RemoveDecimalPlace, "Remove Decimal Place", "CapsLock+Ctrl+Alt+Numpad0")
+
+#HotIf
+
+; -----------------------------------------------------------------------------
 ; Excel-Specific CapsLock Hold Layer - All hotkeys in one block
 ; -----------------------------------------------------------------------------
-#HotIf (IsExcel() && GetKeyState("SC03A","P"))
+#HotIf (IsExcel() && GetKeyState("SC03A","P") && !GetKeyState("Alt","P"))
 
 ; PASTE operations
 SC03A & v::Do(() => PasteSpecial("values"), "Paste Values", "CapsLock+V")                    ; Paste Values
@@ -1438,66 +1490,39 @@ SC03A & NumpadMult::Do(() => ClearFilter(), "Clear Filter", "CapsLock+Numpad*") 
 SC03A & NumpadAdd::Do(() => PasteOperation("add"), "Paste Add", "CapsLock+Numpad+")             ; Paste Operation Add
 SC03A & NumpadSub::Do(() => PasteOperation("subtract"), "Paste Subtract", "CapsLock+Numpad-")        ; Paste Operation Subtract
 
-; FORMAT - Row types
-SC03A & 1::Do(() => Send("^!+1"), "Font Color", "CapsLock+1")                       ; Custom font color macro
-SC03A & 2::Do(() => ClassifySubtotal(), "Subtotal Format", "CapsLock+2")                        ; Subtotal
-SC03A & 3::Do(() => ClassifyMajorTotal(), "Major Total Format", "CapsLock+3")                      ; Major total
-SC03A & 4::Do(() => ClassifyGrandTotal(), "Grand Total Format", "CapsLock+4")                      ; Grand total
-SC03A & 6::Do(() => SetRowHeight(5), "Row Height 5pt", "CapsLock+6")                           ; Row height 5pt
-
-; FORMAT - Number formats
-SC03A & 9::Do(() => SetNumberFormat("general"), "General Format", "CapsLock+9")                ; General format
-SC03A & a::Do(() => SetRowHeight(5), "Row Height 5pt", "CapsLock+A")                           ; Row height 5pt
-SC03A & k::Do(() => Send("^!+k"), "Number Format", "CapsLock+K")                    ; Custom number format macro
-SC03A & 5::Do(() => SetNumberFormat("percent"), "Percent Format", "CapsLock+5")                ; Percent format
-SC03A & m::Do(() => SetNumberFormat("month"), "Month Format", "CapsLock+M")                  ; Month format
-SC03A & d::Do(() => SetNumberFormat("date"), "Date Format", "CapsLock+D")                   ; Date format
-
-; ALIGNMENT
-SC03A & F1::Do(() => SetAlignment("left"), "Align Left", "CapsLock+F1")                     ; Align Left
-SC03A & F2::Do(() => SetAlignment("center"), "Align Center", "CapsLock+F2")                   ; Align Center
-SC03A & F3::Do(() => SetAlignment("right"), "Align Right", "CapsLock+F3")                    ; Align Right
-SC03A & F4::Do(() => ToggleWrapText(), "Toggle Wrap Text", "CapsLock+F4")                         ; Toggle Wrap
-
-; BORDERS / MACROS
-SC03A & r::                                                                            ; CapsLock+R or CapsLock+Ctrl+R
-{
+; LAYOUT (CapsLock+Ctrl combinations)
+SC03A & r::{
+    if GetKeyState("Alt","P") {
+        return
+    }
     if GetKeyState("Ctrl","P") {
         Do(AutoFitRows, "AutoFit Row Height", "CapsLock+Ctrl+R")
-    } else {
-        Do(() => ApplyRightBorder(), "Apply Right Border", "CapsLock+R")
     }
 }
-SC03A & b::Do(() => ApplyBottomBorder(), "Apply Bottom Border", "CapsLock+B")                       ; Apply BottomThinBorder macro
-SC03A & o::Do(() => SetBorders("outline"), "Outline Borders", "CapsLock+O")                     ; Outline borders
-SC03A & i::Do(() => SetBorders("inside"), "Inside Borders", "CapsLock+I")                      ; Inside borders
-SC03A & c::                                                                            ; CapsLock+C or CapsLock+Ctrl+C
-{
+
+SC03A & c::{
+    if GetKeyState("Alt","P") {
+        return
+    }
     if GetKeyState("Ctrl","P") {
         Do(AutoFitColumns, "AutoFit Column Width", "CapsLock+Ctrl+C")
-    } else {
-        Do(() => ClearBorders(), "Clear Borders", "CapsLock+C")
     }
 }
-SC03A & y::Do(() => SetBorderLine("top", "double"), "Top Double Border", "CapsLock+Y")            ; Top double border
-SC03A & j::Do(() => SetBorderLine("left", "thick"), "Left Thick Border", "CapsLock+J")            ; Left thick border
-; SC03A & `;:: removed - now used globally for Ctrl+Windows+Alt+T
 
-; DIVIDERS / SIZING
-SC03A & q::                                                                            ; CapsLock+Q or CapsLock+Ctrl+Q
-{
-    if GetKeyState("Ctrl","P") {
-        Do(() => SetRowHeight(5), "Set Row Height 5pt", "CapsLock+Ctrl+Q")
+SC03A & q::{
+    if GetKeyState("Alt","P") {
+        return
+    }
+    if !GetKeyState("Ctrl","P") {
+        return
+    }
+
+    if GetKeyState("Shift","P") {
+        Do(() => SetColumnWidth(0.5), "Set Column Width", "CapsLock+Ctrl+Shift+Q")
     } else {
-        Do(() => SetColumnWidth(0.5), "Set Column Width", "CapsLock+Q")
+        Do(() => SetRowHeight(5), "Set Row Height 5pt", "CapsLock+Ctrl+Q")
     }
 }
-SC03A & F5::Do(() => AutoFitColumns(), "AutoFit Columns", "CapsLock+F5")                         ; AutoFit Columns
-SC03A & F6::Do(() => AutoFitRows(), "AutoFit Rows", "CapsLock+F6")                            ; AutoFit Rows
-SC03A & F11::Do(IncreaseIndent, "Increase Indent", "CapsLock+F11")                                ; Increase indent
-SC03A & F12::Do(DecreaseIndent, "Decrease Indent", "CapsLock+F12")                                ; Decrease indent
-SC03A & NumpadDot::Do(AddDecimalPlace, "Add Decimal Place", "CapsLock+Numpad.")                         ; Add decimal place
-SC03A & Numpad0::Do(RemoveDecimalPlace, "Remove Decimal Place", "CapsLock+Numpad0")                        ; Remove decimal place
 
 ; NAVIGATION
 SC03A & [::Do(() => JumpToPrevDivider(), "Prev Divider", "CapsLock+[")                       ; Prev divider
@@ -1563,7 +1588,7 @@ SC03A & Delete::Do(ClearAllSel, "Clear All", "CapsLock+Delete")                 
 
 #HotIf
 
-; (Ctrl-layer removed: Ctrl behavior is handled inside base CapsLock combos)
+; Additional modifier layers are handled via the #HotIf blocks above
 
 ; Win key safety - prevent Start menu while holding CapsLock in Excel
 #HotIf (IsExcel() && GetKeyState("SC03A","P"))
