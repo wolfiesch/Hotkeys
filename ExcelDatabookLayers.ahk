@@ -149,7 +149,7 @@ RegisterLayerHotkeys(config) {
 
         ; Wrap the registered action in Do() so tracking and error handling
         ; remain consistent with the existing static hotkey definitions.
-        callback := (*) => Do(entry.actionFn, entry.description, hotkeyLabel)
+        callback := (*) => Do(() => entry.actionFn.Call(), entry.description, hotkeyLabel)
 
         HotIf(contextPredicate)
         Hotkey(entry.leader . " & " . entry.key, callback, "On")
