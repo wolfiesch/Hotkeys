@@ -87,6 +87,7 @@ InitializeHotkeyDescriptions() {
     HotkeyDescriptions["CapsLock+Up"] := "Previous Tab"
     HotkeyDescriptions["CapsLock+Ctrl+Right"] := "Next Sheet"
     HotkeyDescriptions["CapsLock+Ctrl+Left"] := "Previous Sheet"
+    HotkeyDescriptions["CapsLock+Ctrl+Down"] := "Propogat Paste"
 
     ; Other operations
     HotkeyDescriptions["CapsLock+/"] := "Delete Column"
@@ -852,6 +853,54 @@ PasteFormulasWithFormat() {
     ShowHUD("Paste Formulas + Formats (Skip Blanks)", 800)
 }
 
+Propogat() {
+    ; Propagate selection across the right/down neighbor block before pasting formulas + formats.
+    ; The routine mirrors manual Ctrl+Shift+Arrow navigation and reuses the CapsLock+S paste macro.
+    ctrlHeld := false
+    shiftHeld := false
+
+    try {
+        Send("{Ctrl Down}")
+        ctrlHeld := true
+        Wait(Timing.FAST_DELAY)
+
+        Send("{Shift Down}")
+        shiftHeld := true
+        Wait(Timing.FAST_DELAY)
+
+        ; Extend selection to the rightmost contiguous block.
+        Send("{Right}")
+        Wait(Timing.FAST_DELAY)
+
+        ; Continue extending downward while retaining Ctrl+Shift.
+        Send("{Down}")
+        Wait(Timing.FAST_DELAY)
+
+        ; Release Ctrl but keep Shift depressed for the upward contraction pass.
+        Send("{Ctrl Up}")
+        ctrlHeld := false
+        Wait(Timing.FAST_DELAY)
+
+        ; Shrink selection upward (still holding Shift) to land on the final target row.
+        Send("{Up}")
+        Wait(Timing.FAST_DELAY)
+
+        Send("{Shift Up}")
+        shiftHeld := false
+    } finally {
+        ; Safety: guarantee modifiers are not left in a pressed state.
+        if (ctrlHeld) {
+            Send("{Ctrl Up}")
+        }
+        if (shiftHeld) {
+            Send("{Shift Up}")
+        }
+    }
+
+    Wait(Timing.FAST_DELAY)
+    PasteFormulasWithFormat()
+}
+
 ; Filter operations
 ToggleFilter() {
     ; Alt + H -> S -> F (Toggle Filter)
@@ -1423,6 +1472,12 @@ SC03A & s::Do(() => PasteFormulasWithFormat(), "Paste Formulas + Formats", "Caps
 SC03A & x::Do(() => PasteSpecial("values", Map("transpose", true)), "Paste Values (Transpose)", "CapsLock+X")  ; Paste Values (Transpose)
 SC03A & l::Do(() => PasteLink(), "Paste Link", "CapsLock+L")                               ; Paste Link
 SC03A & p::Do(() => Send("^!v"), "Paste Special Dialog", "CapsLock+P")                               ; Paste Special dialog
+
+SC03A & Down::{
+    if GetKeyState("Ctrl", "P") {
+        Do(() => Propogat(), "Propogat Paste", "CapsLock+Ctrl+Down")
+    }
+}
 
 ; Numpad operations
 SC03A & /::
