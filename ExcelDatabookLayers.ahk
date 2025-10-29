@@ -36,9 +36,203 @@ global LayerHotkeyConfig := [
     {
         leader: "SC03A",
         modifiers: ["Ctrl"],
+        blockedModifiers: ["Alt"],
         key: "f",
         actionFn: () => FreezeAtActiveCell(),
         description: "Freeze Panes",
+        contextFn: IsExcel
+    }
+]
+
+; Ctrl-enhanced mappings keep long-standing behaviors available while allowing
+; the dynamic layer registrar to manage modifier-aware descriptions.
+global ExcelCtrlLayerHotkeys := [
+    {
+        leader: "SC03A",
+        modifiers: ["Ctrl"],
+        blockedModifiers: ["Alt"],
+        key: "/",
+        actionFn: DeleteSheetRow,
+        description: "Delete Row",
+        contextFn: IsExcel
+    },
+    {
+        leader: "SC03A",
+        modifiers: ["Ctrl"],
+        blockedModifiers: ["Alt"],
+        key: "r",
+        actionFn: () => AutoFitRows(),
+        description: "AutoFit Row Height",
+        contextFn: IsExcel
+    },
+    {
+        leader: "SC03A",
+        modifiers: ["Ctrl"],
+        blockedModifiers: ["Alt"],
+        key: "c",
+        actionFn: () => AutoFitColumns(),
+        description: "AutoFit Column Width",
+        contextFn: IsExcel
+    },
+    {
+        leader: "SC03A",
+        modifiers: ["Ctrl"],
+        blockedModifiers: ["Alt"],
+        key: "q",
+        actionFn: () => SetRowHeight(5),
+        description: "Set Row Height 5pt",
+        contextFn: IsExcel
+    },
+    {
+        leader: "SC03A",
+        modifiers: ["Ctrl"],
+        blockedModifiers: ["Alt"],
+        key: "g",
+        actionFn: GroupAndCollapseSelection,
+        description: "Group and Collapse",
+        contextFn: IsExcel
+    },
+    {
+        leader: "SC03A",
+        modifiers: ["Ctrl"],
+        blockedModifiers: ["Alt"],
+        key: "Right",
+        actionFn: () => Send("^{PgDn}"),
+        description: "Next Sheet",
+        contextFn: IsExcel
+    },
+    {
+        leader: "SC03A",
+        modifiers: ["Ctrl"],
+        blockedModifiers: ["Alt"],
+        key: "Left",
+        actionFn: () => Send("^{PgUp}"),
+        description: "Previous Sheet",
+        contextFn: IsExcel
+    }
+]
+
+; CapsLock+Ctrl+Alt consolidates data hygiene, layout, and clean-up routines
+; into a single "power user" layer that mirrors the documentation tables.
+global ExcelThreeKeyLayerHotkeys := [
+    {
+        leader: "SC03A",
+        modifiers: ["Ctrl", "Alt"],
+        key: "t",
+        actionFn: () => TrimInPlace(),
+        description: "Trim In Place",
+        contextFn: IsExcel
+    },
+    {
+        leader: "SC03A",
+        modifiers: ["Ctrl", "Alt"],
+        key: "c",
+        actionFn: () => CleanInPlace(),
+        description: "Clean In Place",
+        contextFn: IsExcel
+    },
+    {
+        leader: "SC03A",
+        modifiers: ["Ctrl", "Alt"],
+        key: "n",
+        actionFn: () => CoerceToNumber(),
+        description: "Convert to Number",
+        contextFn: IsExcel
+    },
+    {
+        leader: "SC03A",
+        modifiers: ["Ctrl", "Alt"],
+        key: "e",
+        actionFn: () => Send("!de"),
+        description: "Text to Columns",
+        contextFn: IsExcel
+    },
+    {
+        leader: "SC03A",
+        modifiers: ["Ctrl", "Alt"],
+        key: "F7",
+        actionFn: () => Send("^+l"),
+        description: "Toggle AutoFilter",
+        contextFn: IsExcel
+    },
+    {
+        leader: "SC03A",
+        modifiers: ["Ctrl", "Alt"],
+        key: "f",
+        actionFn: () => FreezeAtActiveCell(),
+        description: "Freeze Panes (Three-Key)",
+        contextFn: IsExcel
+    },
+    {
+        leader: "SC03A",
+        modifiers: ["Ctrl", "Alt"],
+        key: "a",
+        actionFn: () => AutoFitColumns(),
+        description: "AutoFit Columns (Three-Key)",
+        contextFn: IsExcel
+    },
+    {
+        leader: "SC03A",
+        modifiers: ["Ctrl", "Alt"],
+        key: "r",
+        actionFn: () => AutoFitRows(),
+        description: "AutoFit Rows (Three-Key)",
+        contextFn: IsExcel
+    },
+    {
+        leader: "SC03A",
+        modifiers: ["Ctrl", "Alt"],
+        key: "w",
+        actionFn: () => SetColumnWidth(0.5),
+        description: "Set Column Width 0.5",
+        contextFn: IsExcel
+    },
+    {
+        leader: "SC03A",
+        modifiers: ["Ctrl", "Alt"],
+        key: "h",
+        actionFn: () => SetRowHeight(5),
+        description: "Set Row Height 5pt (Three-Key)",
+        contextFn: IsExcel
+    },
+    {
+        leader: "SC03A",
+        modifiers: ["Ctrl", "Alt"],
+        key: "g",
+        actionFn: GroupAndCollapseSelection,
+        description: "Group and Collapse (Three-Key)",
+        contextFn: IsExcel
+    },
+    {
+        leader: "SC03A",
+        modifiers: ["Ctrl", "Alt"],
+        key: "/",
+        actionFn: DeleteSheetRow,
+        description: "Delete Row (Three-Key)",
+        contextFn: IsExcel
+    },
+    {
+        leader: "SC03A",
+        modifiers: ["Ctrl", "Alt"],
+        key: "z",
+        actionFn: ClearFormatsSel,
+        description: "Clear Formats (Three-Key)",
+        contextFn: IsExcel
+    },
+    {
+        leader: "SC03A",
+        modifiers: ["Ctrl", "Alt"],
+        key: "Backspace",
+        actionFn: ClearContentsSel,
+        description: "Clear Contents (Three-Key)",
+        contextFn: IsExcel
+    },
+    {
+        leader: "SC03A",
+        modifiers: ["Ctrl", "Alt"],
+        key: "Delete",
+        actionFn: ClearAllSel,
+        description: "Clear All (Three-Key)",
         contextFn: IsExcel
     }
 ]
@@ -143,6 +337,7 @@ RegisterLayerHotkeys(config) {
             entry.contextFn.Call()
             && GetKeyState(entry.leader, "P")
             && AreLayerModifiersActive(entry.modifiers)
+            && AreBlockedModifiersInactive(entry.Has("blockedModifiers") ? entry.blockedModifiers : [])
         )
 
         hotkeyLabel := BuildLayerHotkeyLabel(entry)
@@ -176,6 +371,22 @@ AreLayerModifiersActive(requiredModifiers) {
     return true
 }
 
+AreBlockedModifiersInactive(blockedModifiers) {
+    ; Prevent layer triggers from firing when explicitly disallowed modifiers
+    ; are held (e.g., keep Ctrl-only layers from running when Alt is pressed).
+    if !IsObject(blockedModifiers) || blockedModifiers.Length = 0 {
+        return true
+    }
+
+    for modifier in blockedModifiers {
+        if GetKeyState(modifier, "P") {
+            return false
+        }
+    }
+
+    return true
+}
+
 BuildLayerHotkeyLabel(entry) {
     ; Produce a human-readable label (e.g., CapsLock+Ctrl+F) that mirrors the
     ; existing convention in HotkeyDescriptions for overlay consumption.
@@ -188,7 +399,7 @@ BuildLayerHotkeyLabel(entry) {
         }
     }
 
-    labelParts.Push(StrUpper(entry.key))
+    labelParts.Push(NormalizeLayerKeyLabel(entry.key))
 
     label := ""
     for index, part in labelParts {
@@ -196,6 +407,27 @@ BuildLayerHotkeyLabel(entry) {
     }
 
     return label
+}
+
+NormalizeLayerKeyLabel(key) {
+    ; Preserve descriptive key names while uppercasing single characters for
+    ; consistency across overlay labels.
+    if (key = "") {
+        return ""
+    }
+
+    if StrLen(key) = 1 {
+        return StrUpper(key)
+    }
+
+    ; List of known readable key names
+    knownReadableNames := ["Backspace", "Delete", "F7", "Right", "Left"]
+
+    if key in knownReadableNames {
+        return key
+    }
+
+    return key
 }
 
 GetLayerLeaderDisplayName(leader) {
@@ -212,6 +444,8 @@ GetLayerLeaderDisplayName(leader) {
 ; Initialize the hotkey descriptions now that function is defined
 InitializeHotkeyDescriptions()
 RegisterLayerHotkeys(LayerHotkeyConfig)
+RegisterLayerHotkeys(ExcelCtrlLayerHotkeys)
+RegisterLayerHotkeys(ExcelThreeKeyLayerHotkeys)
 
 ; Create the overlay GUI
 CreateStatusOverlay()
@@ -1390,10 +1624,12 @@ SC03A & Space::{
     helpText := "GLOBAL: semicolon->Ctrl+Windows+Alt+T | Ctrl+Alt+H->Toggle Overlay"
     helpText .= Chr(10) . "PASTE: v,f,t,w,s,x,l,p + Numpad+ -"
     helpText .= Chr(10) . "FILTER: Numpad/ (Toggle) Numpad* (Clear)"
-    helpText .= Chr(10) . "DELETE: / (Ctrl=Row)"
     helpText .= Chr(10) . "FORMAT: 1,2,3,4,6 + 9,a,k,5,m,d + F1-F4 + r,b,o,i,c,y,j + q,F5,F6,F11,F12 + Numpad.,0"
     helpText .= Chr(10) . "NAV: [,],=,-,.,,g,8,h,Right,Left + Numpad8,2,4,6,7,9"
-    helpText .= Chr(10) . "DATA: u,F8,n,e,F7,F9 + z,Backspace,Delete"
+    helpText .= Chr(10) . "CTRL+CAPS: f,r,c,q,g,/,+Right,+Left"
+    helpText .= Chr(10) . "CTRL+ALT+CAPS DATA: t,c,n,e,F7"
+    helpText .= Chr(10) . "CTRL+ALT+CAPS LAYOUT: f,a,r,w,h,g,/"
+    helpText .= Chr(10) . "CTRL+ALT+CAPS CLEANS: z,Backspace,Delete"
     helpText .= Chr(10) . "Note: Excel-specific hotkeys only work in Excel"
     ShowOSD("CAPSLOCK LAYER - EXCEL SHORTCUTS", helpText, 2500, "top-center", 720)
 }
@@ -1404,19 +1640,13 @@ SC03A & SC027::Send("^#!t")
 #HotIf
 
 ; -----------------------------------------------------------------------------
-; Excel-Specific CapsLock Hold Layer - All hotkeys in one block
+; Excel-Specific CapsLock Hold Layer - Base combinations only (no Ctrl/Alt)
 ; -----------------------------------------------------------------------------
-#HotIf (IsExcel() && GetKeyState("SC03A","P"))
+#HotIf (IsExcel() && GetKeyState("SC03A","P") && !GetKeyState("Ctrl","P") && !GetKeyState("Alt","P"))
 
 ; PASTE operations
 SC03A & v::Do(() => PasteSpecial("values"), "Paste Values", "CapsLock+V")                    ; Paste Values
-SC03A & f::                                                                            ; CapsLock+F
-{
-    if GetKeyState("Ctrl", "P") {
-        return
-    }
-    Do(() => PasteSpecial("formulas"), "Paste Formulas", "CapsLock+F")
-}
+SC03A & f::Do(() => PasteSpecial("formulas"), "Paste Formulas", "CapsLock+F")
 SC03A & t::Do(() => PasteSpecial("formats"), "Paste Formats", "CapsLock+T")                   ; Paste Formats
 SC03A & w::Do(() => PasteSpecial("colwidths"), "Paste Column Widths", "CapsLock+W")                 ; Paste Column Widths
 SC03A & s::Do(() => PasteFormulasWithFormat(), "Paste Formulas + Formats", "CapsLock+S")   ; Paste Formulas + Number Formats, Skip Blanks
@@ -1425,14 +1655,7 @@ SC03A & l::Do(() => PasteLink(), "Paste Link", "CapsLock+L")                    
 SC03A & p::Do(() => Send("^!v"), "Paste Special Dialog", "CapsLock+P")                               ; Paste Special dialog
 
 ; Numpad operations
-SC03A & /::
-{
-    if GetKeyState("Ctrl","P") {
-        Do(DeleteSheetRow, "Delete Row", "CapsLock+Ctrl+/")
-    } else {
-        Do(DeleteSheetColumn, "Delete Column", "CapsLock+/")
-    }
-}
+SC03A & /::Do(DeleteSheetColumn, "Delete Column", "CapsLock+/")
 SC03A & NumpadDiv::Do(() => ToggleFilter(), "Toggle Filter", "CapsLock+Numpad/")                    ; Toggle Filter (Alt+H+S+F)
 SC03A & NumpadMult::Do(() => ClearFilter(), "Clear Filter", "CapsLock+Numpad*")                      ; Clear Filter (Alt+H+S+C)
 SC03A & NumpadAdd::Do(() => PasteOperation("add"), "Paste Add", "CapsLock+Numpad+")             ; Paste Operation Add
@@ -1460,38 +1683,17 @@ SC03A & F3::Do(() => SetAlignment("right"), "Align Right", "CapsLock+F3")       
 SC03A & F4::Do(() => ToggleWrapText(), "Toggle Wrap Text", "CapsLock+F4")                         ; Toggle Wrap
 
 ; BORDERS / MACROS
-SC03A & r::                                                                            ; CapsLock+R or CapsLock+Ctrl+R
-{
-    if GetKeyState("Ctrl","P") {
-        Do(AutoFitRows, "AutoFit Row Height", "CapsLock+Ctrl+R")
-    } else {
-        Do(() => ApplyRightBorder(), "Apply Right Border", "CapsLock+R")
-    }
-}
+SC03A & r::Do(() => ApplyRightBorder(), "Apply Right Border", "CapsLock+R")
 SC03A & b::Do(() => ApplyBottomBorder(), "Apply Bottom Border", "CapsLock+B")                       ; Apply BottomThinBorder macro
 SC03A & o::Do(() => SetBorders("outline"), "Outline Borders", "CapsLock+O")                     ; Outline borders
 SC03A & i::Do(() => SetBorders("inside"), "Inside Borders", "CapsLock+I")                      ; Inside borders
-SC03A & c::                                                                            ; CapsLock+C or CapsLock+Ctrl+C
-{
-    if GetKeyState("Ctrl","P") {
-        Do(AutoFitColumns, "AutoFit Column Width", "CapsLock+Ctrl+C")
-    } else {
-        Do(() => ClearBorders(), "Clear Borders", "CapsLock+C")
-    }
-}
+SC03A & c::Do(() => ClearBorders(), "Clear Borders", "CapsLock+C")
 SC03A & y::Do(() => SetBorderLine("top", "double"), "Top Double Border", "CapsLock+Y")            ; Top double border
 SC03A & j::Do(() => SetBorderLine("left", "thick"), "Left Thick Border", "CapsLock+J")            ; Left thick border
 ; SC03A & `;:: removed - now used globally for Ctrl+Windows+Alt+T
 
 ; DIVIDERS / SIZING
-SC03A & q::                                                                            ; CapsLock+Q or CapsLock+Ctrl+Q
-{
-    if GetKeyState("Ctrl","P") {
-        Do(() => SetRowHeight(5), "Set Row Height 5pt", "CapsLock+Ctrl+Q")
-    } else {
-        Do(() => SetColumnWidth(0.5), "Set Column Width", "CapsLock+Q")
-    }
-}
+SC03A & q::Do(() => SetColumnWidth(0.5), "Set Column Width", "CapsLock+Q")
 SC03A & F5::Do(() => AutoFitColumns(), "AutoFit Columns", "CapsLock+F5")                         ; AutoFit Columns
 SC03A & F6::Do(() => AutoFitRows(), "AutoFit Rows", "CapsLock+F6")                            ; AutoFit Rows
 SC03A & F11::Do(IncreaseIndent, "Increase Indent", "CapsLock+F11")                                ; Increase indent
@@ -1506,22 +1708,13 @@ SC03A & =::Do(() => JumpToBlockEdge("first"), "First Block Edge", "CapsLock+=") 
 SC03A & -::Do(() => JumpToBlockEdge("last"), "Last Block Edge", "CapsLock+-")                   ; Last block edge
 SC03A & ,::Do(() => Send("^{PgUp}"), "Previous Sheet", "CapsLock+,")                           ; Previous sheet
 SC03A & .::Do(() => Send("^{PgDn}"), "Next Sheet", "CapsLock+.")                           ; Next sheet
-SC03A & g::
-{
-    if GetKeyState("Ctrl","P") {
-        Do(GroupAndCollapseSelection, "Group and Collapse", "CapsLock+Ctrl+G")
-    } else {
-        Do(() => Send("^g"), "Go To", "CapsLock+G")
-    }
-}
+SC03A & g::Do(() => Send("^g"), "Go To", "CapsLock+G")
 SC03A & 8::Do(() => Send("^+8"), "Current Region", "CapsLock+8")                               ; Current Region
 SC03A & h::Do(() => Send("^!+h"), "Highlight Cell", "CapsLock+H")                  ; Custom macro Ctrl+Alt+Shift+H
 
 SC03A & Right::
 {
-    if GetKeyState("Ctrl","P") {
-        Do(() => Send("^{PgDn}"), "Next Sheet", "CapsLock+Ctrl+Right")
-    } else if GetKeyState("Shift","P") {
+    if GetKeyState("Shift","P") {
         Do(() => Send("{Shift down}{Right 11}{Shift up}"), "Select Right 11", "CapsLock+Shift+Right")
     } else {
         Do(() => Send("{Right 12}"), "Move Right 12", "CapsLock+Right")
@@ -1530,9 +1723,7 @@ SC03A & Right::
 
 SC03A & Left::
 {
-    if GetKeyState("Ctrl","P") {
-        Do(() => Send("^{PgUp}"), "Previous Sheet", "CapsLock+Ctrl+Left")
-    } else if GetKeyState("Shift","P") {
+    if GetKeyState("Shift","P") {
         Do(() => Send("{Shift down}{Left 11}{Shift up}"), "Select Left 11", "CapsLock+Shift+Left")
     } else {
         Do(() => Send("{Left 12}"), "Move Left 12", "CapsLock+Left")
@@ -1553,7 +1744,7 @@ SC03A & F8::Do(() => CleanInPlace(), "Clean In Place", "CapsLock+F8")           
 SC03A & n::Do(() => CoerceToNumber(), "Convert to Number", "CapsLock+N")                          ; Convert to Number
 SC03A & e::Do(() => Send("!de"), "Text to Columns", "CapsLock+E")                               ; Text to Columns
 SC03A & F7::Do(() => Send("^+l"), "Toggle AutoFilter", "CapsLock+F7")                              ; Toggle AutoFilter
-; SC03A & F9::Do(() => FreezeAtActiveCell(), "Freeze Panes")                     ; Freeze panes - moved to Ctrl+CapsLock+F
+; SC03A & F9::Do(() => FreezeAtActiveCell(), "Freeze Panes")                     ; Freeze panes handled by Ctrl/Alt metadata layer
 
 ; CLEARS
 SC03A & z::Do(ClearFormatsSel, "Clear Formats", "CapsLock+Z")                                 ; Clear Formats
@@ -1563,7 +1754,7 @@ SC03A & Delete::Do(ClearAllSel, "Clear All", "CapsLock+Delete")                 
 
 #HotIf
 
-; (Ctrl-layer removed: Ctrl behavior is handled inside base CapsLock combos)
+; Modifier-aware layers (Ctrl, Ctrl+Alt) are registered via LayerHotkeyConfig above
 
 ; Win key safety - prevent Start menu while holding CapsLock in Excel
 #HotIf (IsExcel() && GetKeyState("SC03A","P"))
