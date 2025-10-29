@@ -1,7 +1,7 @@
 # Hotkey Mapping Documentation
 
 **File**: ExcelDatabookLayers.ahk  
-**Last Updated**: 2025-01-09 (Initial documentation)
+**Last Updated**: 2025-10-29 (Three-key layer reorganization)
 
 ## Table of Contents
 
@@ -16,12 +16,16 @@
   - [NAVIGATION](#navigation)
   - [DATA/CLEANUP](#datacleanup)
   - [HELP](#help)
+- [Three-Key Layer (Ctrl+Alt+CapsLock)](#three-key-layer-ctrlaltcapslock)
+  - [Data Tools](#data-tools)
+  - [Layout & Structure](#layout--structure)
+  - [Cleanup & Clears](#cleanup--clears)
 - [Special Modifier Combinations](#special-modifier-combinations)
 - [Changelog](#changelog)
 
 ## Overview
 
-This AutoHotkey script provides Excel and PowerPoint automation through layered hotkeys. The primary layer uses CapsLock as a modifier key when Excel is focused, with additional Ctrl combinations for extended functionality.
+This AutoHotkey script provides Excel and PowerPoint automation through layered hotkeys. The primary layer uses CapsLock as a modifier key when Excel is focused, while metadata-driven Ctrl and Ctrl+Alt combinations extend the map with grouped data, layout, and cleanup workflows.
 
 ## PowerPoint Hotkeys
 
@@ -137,15 +141,53 @@ This AutoHotkey script provides Excel and PowerPoint automation through layered 
 | `CapsLock+Backspace` | Clear Contents | Delete key |
 | `CapsLock+Delete` | Clear All | Alt+H → E → A |
 
+> **Tip:** Every data, layout, and cleanup command in this table is mirrored on the new Ctrl+Alt+CapsLock layer so that related tools can be executed from a dedicated three-modifier posture.
+
 ### HELP
 
 | Hotkey | Action | Description |
 |--------|--------|-------------|
 | `CapsLock+Space` | Show Help Overlay | Display on-screen help with all hotkeys |
 
+## Three-Key Layer (Ctrl+Alt+CapsLock)
+
+Hold **CapsLock+Ctrl+Alt** to access a reorganized "power" layer that groups related Excel tooling. The tables below mirror the code-backed metadata so overlay descriptions stay in sync with these combinations.
+
+### Data Tools
+
+| Hotkey | Action | Description |
+|--------|--------|-------------|
+| `CapsLock+Ctrl+Alt+T` | Trim In Place | Remove leading/trailing spaces via find & replace |
+| `CapsLock+Ctrl+Alt+C` | Clean In Place | Strip non-printable characters |
+| `CapsLock+Ctrl+Alt+N` | Convert to Number | Force numeric coercion using Text-to-Columns |
+| `CapsLock+Ctrl+Alt+E` | Text to Columns | Launch delimiter wizard (Alt+D → E) |
+| `CapsLock+Ctrl+Alt+F7` | Toggle AutoFilter | Ctrl+Shift+L |
+
+### Layout & Structure
+
+| Hotkey | Action | Description |
+|--------|--------|-------------|
+| `CapsLock+Ctrl+Alt+F` | Freeze Panes | Alt+W → F → F |
+| `CapsLock+Ctrl+Alt+A` | AutoFit Columns | AutoFit selected columns |
+| `CapsLock+Ctrl+Alt+R` | AutoFit Rows | AutoFit selected rows |
+| `CapsLock+Ctrl+Alt+W` | Set Column Width | Set width to 0.5 |
+| `CapsLock+Ctrl+Alt+H` | Set Row Height | Set height to 5pt |
+| `CapsLock+Ctrl+Alt+G` | Group & Collapse | Outline the selection and collapse |
+| `CapsLock+Ctrl+Alt+/` | Delete Row | Remove the active sheet row |
+
+### Cleanup & Clears
+
+| Hotkey | Action | Description |
+|--------|--------|-------------|
+| `CapsLock+Ctrl+Alt+Z` | Clear Formats | Alt+H → E → F |
+| `CapsLock+Ctrl+Alt+Backspace` | Clear Contents | Delete cell contents |
+| `CapsLock+Ctrl+Alt+Delete` | Clear All | Alt+H → E → A |
+
 ## Special Modifier Combinations
 
-*These hotkeys require both CapsLock and Ctrl to be held simultaneously*
+*These hotkeys require CapsLock plus additional modifiers*
+
+### CapsLock + Ctrl (Legacy quick actions)
 
 | Hotkey | Action | Description |
 |--------|--------|-------------|
@@ -153,10 +195,20 @@ This AutoHotkey script provides Excel and PowerPoint automation through layered 
 | `CapsLock+Ctrl+R` | AutoFit Row Height | Alt+H → O → A |
 | `CapsLock+Ctrl+C` | AutoFit Column Width | Alt+H → O → I |
 | `CapsLock+Ctrl+Q` | Set Row Height | Alt+H → O → H → 5 → Enter |
+| `CapsLock+Ctrl+G` | Group & Collapse | Outline selection |
+| `CapsLock+Ctrl+/` | Delete Row | Remove active row |
+| `CapsLock+Ctrl+Right` | Next Sheet | Ctrl+PgDn |
+| `CapsLock+Ctrl+Left` | Previous Sheet | Ctrl+PgUp |
 
-**Note**: These combinations are implemented within the main CapsLock layer using conditional logic to detect if Ctrl is also pressed.
+These remain available for muscle memory compatibility but now coexist with the richer [three-key layer](#three-key-layer-ctrlaltcapslock), which groups the same operations alongside related cleanup tools.
 
 ## Changelog
+
+### 2025-10-29
+- **Added**: CapsLock+Ctrl+Alt three-key layer grouping data tools, layout utilities, and cleanup actions
+- **Added**: Metadata-driven registration for CapsLock+Ctrl and CapsLock+Ctrl+Alt combinations with overlay descriptions
+- **Updated**: Base CapsLock layer now ignores Ctrl/Alt modifiers so stacked layers trigger reliably
+- **Documented**: New tables highlighting grouped workflows and refreshed quick reference content
 
 ### 2025-01-09
 - **Added**: CapsLock+Ctrl+Q hotkey for Set Row Height 5pt
