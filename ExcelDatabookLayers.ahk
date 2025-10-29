@@ -37,7 +37,7 @@ global LayerHotkeyConfig := [
         leader: "SC03A",
         modifiers: ["Ctrl"],
         key: "f",
-        actionFn: FreezeAtActiveCell,
+        actionFn: () => FreezeAtActiveCell(),
         description: "Freeze Panes",
         contextFn: IsExcel
     }
