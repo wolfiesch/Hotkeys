@@ -1,4 +1,4 @@
-"""Tests that validate the AutoHotkey v2 script compiles without syntax errors."""
+"""Test that validates the AutoHotkey v2 script compiles without syntax errors."""
 
 from __future__ import annotations
 
