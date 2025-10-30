@@ -214,7 +214,7 @@ global ExcelThreeKeyLayerHotkeys := [
     {
         leader: "SC03A",
         modifiers: ["Ctrl", "Alt"],
-        key: "z",
+        key: "+Delete",
         actionFn: ClearFormatsSel,
         description: "Clear Formats (Three-Key)",
         contextFn: IsExcel
@@ -222,7 +222,7 @@ global ExcelThreeKeyLayerHotkeys := [
     {
         leader: "SC03A",
         modifiers: ["Ctrl", "Alt"],
-        key: "Backspace",
+        key: "Delete",
         actionFn: ClearContentsSel,
         description: "Clear Contents (Three-Key)",
         contextFn: IsExcel
@@ -230,7 +230,7 @@ global ExcelThreeKeyLayerHotkeys := [
     {
         leader: "SC03A",
         modifiers: ["Ctrl", "Alt"],
-        key: "Delete",
+        key: "^Delete",
         actionFn: ClearAllSel,
         description: "Clear All (Three-Key)",
         contextFn: IsExcel
@@ -281,6 +281,11 @@ InitializeHotkeyDescriptions() {
     HotkeyDescriptions["CapsLock+Up"] := "Previous Tab"
     HotkeyDescriptions["CapsLock+Ctrl+Right"] := "Next Sheet"
     HotkeyDescriptions["CapsLock+Ctrl+Left"] := "Previous Sheet"
+
+    ; CLEAR actions
+    HotkeyDescriptions["CapsLock+Shift+Delete"] := "Clear Formats"
+    HotkeyDescriptions["CapsLock+Delete"] := "Clear Contents"
+    HotkeyDescriptions["CapsLock+Ctrl+Delete"] := "Clear All"
 
     ; Other operations
     HotkeyDescriptions["CapsLock+/"] := "Delete Column"
@@ -395,11 +400,35 @@ BuildLayerHotkeyLabel(entry) {
 
     if IsObject(entry.modifiers) {
         for modifier in entry.modifiers {
-            labelParts.Push(modifier)
+            PushUnique(labelParts, modifier)
         }
     }
 
-    labelParts.Push(NormalizeLayerKeyLabel(entry.key))
+    normalizedKey := NormalizeLayerKeyLabel(entry.key)
+
+    keyLabel := ""
+
+    if (IsObject(normalizedKey) && normalizedKey.Has("key")) {
+        keyLabel := normalizedKey.key
+    }
+
+    if (IsObject(normalizedKey) && normalizedKey.Has("keyModifiers") && normalizedKey.keyModifiers.Length > 0) {
+        modifierSegment := ""
+
+        for index, modifier in normalizedKey.keyModifiers {
+            modifierSegment .= (index > 1 ? "+" : "") . modifier
+        }
+
+        if (keyLabel != "") {
+            keyLabel := "(" . modifierSegment . "+" . keyLabel . ")"
+        } else {
+            keyLabel := "(" . modifierSegment . ")"
+        }
+    }
+
+    if (keyLabel != "") {
+        PushUnique(labelParts, keyLabel)
+    }
 
     label := ""
     for index, part in labelParts {
@@ -409,25 +438,70 @@ BuildLayerHotkeyLabel(entry) {
     return label
 }
 
+PushUnique(arr, value) {
+    ; Append a value to an array only if it has not been added already. This
+    ; keeps overlay labels from repeating modifiers when combinations (e.g.,
+    ; Ctrl+Delete) are represented in the key string and modifier list.
+    if !IsObject(arr) {
+        return
+    }
+
+    for existing in arr {
+        if (existing = value) {
+            return
+        }
+    }
+
+    arr.Push(value)
+}
+
 NormalizeLayerKeyLabel(key) {
     ; Preserve descriptive key names while uppercasing single characters for
-    ; consistency across overlay labels.
+    ; consistency across overlay labels. The return value includes any
+    ; modifiers encoded directly in the key string so that caller logic can
+    ; present them alongside the layer posture without losing clarity.
+    result := { keyModifiers: [], key: "" }
+
     if (key = "") {
-        return ""
+        return result
+    }
+
+    prefixMap := Map("+", "Shift", "^", "Ctrl", "!", "Alt", "#", "Win")
+    keyModifiers := []
+
+    while (StrLen(key) > 0) {
+        prefix := SubStr(key, 1, 1)
+
+        if prefixMap.Has(prefix) {
+            keyModifiers.Push(prefixMap[prefix])
+            key := SubStr(key, 2)
+            continue
+        }
+
+        break
+    }
+
+    result.keyModifiers := keyModifiers
+
+    if (key = "") {
+        return result
     }
 
     if StrLen(key) = 1 {
-        return StrUpper(key)
+        result.key := StrUpper(key)
+        return result
     }
 
     ; List of known readable key names
     knownReadableNames := ["Backspace", "Delete", "F7", "Right", "Left"]
 
     if key in knownReadableNames {
-        return key
+        result.key := key
+    } else {
+        result.key := key
     }
 
-    return key
+    return result
 }
 
 GetLayerLeaderDisplayName(leader) {
@@ -638,7 +712,7 @@ F1::Send("{F2}")    ; Use F2 edit key while Excel is focused
 ; DELETE: / (Ctrl=Row)
 ; FORMAT: 1,2,3,4,6 + 9,a,k,5,m,d + F1-F4 + r,b,o,i,c,y,j,; + q,F5,F6,F11,F12 + Numpad.,0
 ; NAV: [,],=,-,.,,g,8,h,Right,Left + Numpad8,2,4,6,7,9
-; DATA: u,F8,n,e,F7,F9 + z,Backspace,Delete
+; DATA: u,F8,n,e,F7,F9 + Delete (Shift=Formats, Ctrl=All)
 ; -----------------------------------------------------------------------------
 
 ; Performance optimization
@@ -1629,7 +1703,7 @@ SC03A & Space::{
     helpText .= Chr(10) . "CTRL+CAPS: f,r,c,q,g,/,+Right,+Left"
     helpText .= Chr(10) . "CTRL+ALT+CAPS DATA: t,c,n,e,F7"
     helpText .= Chr(10) . "CTRL+ALT+CAPS LAYOUT: f,a,r,w,h,g,/"
-    helpText .= Chr(10) . "CTRL+ALT+CAPS CLEANS: z,Backspace,Delete"
+    helpText .= Chr(10) . "CTRL+ALT+CAPS CLEANS: Delete (Shift=Formats, Ctrl=All)"
     helpText .= Chr(10) . "Note: Excel-specific hotkeys only work in Excel"
     ShowOSD("CAPSLOCK LAYER - EXCEL SHORTCUTS", helpText, 2500, "top-center", 720)
 }
@@ -1747,9 +1821,9 @@ SC03A & F7::Do(() => Send("^+l"), "Toggle AutoFilter", "CapsLock+F7")           
 ; SC03A & F9::Do(() => FreezeAtActiveCell(), "Freeze Panes")                     ; Freeze panes handled by Ctrl/Alt metadata layer
 
 ; CLEARS
-SC03A & z::Do(ClearFormatsSel, "Clear Formats", "CapsLock+Z")                                 ; Clear Formats
-SC03A & Backspace::Do(ClearContentsSel, "Clear Contents", "CapsLock+Backspace")                        ; Clear Contents
-SC03A & Delete::Do(ClearAllSel, "Clear All", "CapsLock+Delete")                                ; Clear All
+SC03A & +Delete::Do(ClearFormatsSel, "Clear Formats", "CapsLock+Shift+Delete")                      ; Clear Formats
+SC03A & ^Delete::Do(ClearAllSel, "Clear All", "CapsLock+Ctrl+Delete")                            ; Clear All
+SC03A & Delete::Do(ClearContentsSel, "Clear Contents", "CapsLock+Delete")                         ; Clear Contents
 
 
 #HotIf
