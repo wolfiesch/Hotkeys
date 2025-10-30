@@ -179,7 +179,7 @@ Hold **CapsLock+Ctrl+Alt** to access a reorganized "power" layer that groups rel
 
 | Hotkey | Action | Description |
 |--------|--------|-------------|
-| `CapsLock+Ctrl+Alt+(Shift+Delete)` | Clear Formats | Alt+H → E → F |
+| `CapsLock+Ctrl+Alt+Shift+Delete` | Clear Formats | Alt+H → E → F |
 | `CapsLock+Ctrl+Alt+Delete` | Clear Contents | Delete cell contents |
 | `CapsLock+Ctrl+Alt+Ctrl+Delete` | Clear All | Alt+H → E → A |
 
