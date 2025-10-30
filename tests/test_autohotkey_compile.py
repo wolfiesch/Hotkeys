@@ -7,7 +7,7 @@ import shlex
 import subprocess
 import warnings
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 import pytest
 
@@ -27,7 +27,7 @@ AUTOHOTKEY_ENV_VARS: tuple[str, ...] = (
 )
 
 
-def _resolve_autohotkey_command() -> Optional[List[str]]:
+def _resolve_autohotkey_command() -> Optional[list[str]]:
     """Return the command list used to invoke AutoHotkey if configured.
 
     The helper inspects several environment variables to maximize compatibility
@@ -79,7 +79,7 @@ def test_excel_databook_layers_compiles_cleanly() -> None:
     environment = os.environ.copy()
     environment["AHK_VALIDATE_ONLY"] = "1"
 
-    command: List[str] = [
+    command: list[str] = [
         *autohotkey_command,
         "/ErrorStdOut",
         str(SCRIPT_PATH),
