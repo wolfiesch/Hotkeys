@@ -77,15 +77,6 @@ def _validate_balanced_delimiters(source_text: str) -> None:
             continue
 
         if state == "block_comment":
-            if character == "\n":
-                line_number += 1
-                column_number = 1
-                index += 1
-                continue
-            if character == "\r":
-                column_number = 1
-                index += 1
-                continue
             if (
                 character == "*"
                 and index + 1 < length
@@ -95,8 +86,14 @@ def _validate_balanced_delimiters(source_text: str) -> None:
                 index += 2
                 column_number += 2
                 continue
+            if character == "\n":
+                line_number += 1
+                column_number = 1
+            elif character == "\r":
+                column_number = 1
+            else:
+                column_number += 1
             index += 1
-            column_number += 1
             continue
 
         if character == '"':
