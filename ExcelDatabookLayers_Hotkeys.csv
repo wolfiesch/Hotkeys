@@ -66,7 +66,7 @@ DATA,CapsLock+F8,SC03A & F8,Clean In Place,Remove non-printable characters,860
 DATA,CapsLock+N,SC03A & n,Convert to Number,Convert text to numbers using Text to Columns,861
 DATA,CapsLock+E,SC03A & e,Text to Columns,Open Text to Columns wizard,862
 DATA,CapsLock+F7,SC03A & F7,Toggle AutoFilter,Toggle AutoFilter on/off (Ctrl+Shift+L),863
-CLEAR,CapsLock+Z,SC03A & z,Clear Formats,Clear cell formatting only,867
-CLEAR,CapsLock+Backspace,SC03A & Backspace,Clear Contents,Clear cell contents only,868
-CLEAR,CapsLock+Delete,SC03A & Delete,Clear All,Clear both contents and formatting,869
+CLEAR,CapsLock+Shift+Delete,SC03A & +Delete,Clear Formats,Clear cell formatting only,867
+CLEAR,CapsLock+Delete,SC03A & Delete,Clear Contents,Clear cell contents only,868
+CLEAR,CapsLock+Ctrl+Delete,SC03A & ^Delete,Clear All,Clear both contents and formatting,869
 HELP,CapsLock+Space,SC03A & Space,Show Help,Display hotkey reference overlay,872

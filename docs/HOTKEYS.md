@@ -137,9 +137,9 @@ Layers are activated by **holding down** CapsLock combinations:
 | `e` | Text to Columns |
 | `f` | Toggle AutoFilter |
 | `k` | Freeze panes at active cell |
-| `z` | Clear formats |
-| `x` | Clear contents |
-| `a` | Clear all |
+| `Delete` | Clear contents |
+| `Shift+Delete` | Clear formats |
+| `Ctrl+Delete` | Clear all |
 
 ## Notes
 - `FORMAT r` calls `RightBorder` if available; `FORMAT b` calls `CDS_BottomThinBorder` if available. If a macro is not present or fails, the script applies the same effect via COM as a fallback.

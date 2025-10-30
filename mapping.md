@@ -137,11 +137,11 @@ This AutoHotkey script provides Excel and PowerPoint automation through layered 
 | `CapsLock+N` | Convert to Number | Text to Columns to force number conversion |
 | `CapsLock+E` | Text to Columns | Alt+D → E |
 | `CapsLock+F7` | Toggle AutoFilter | Ctrl+Shift+L |
-| `CapsLock+Z` | Clear Formats | Alt+H → E → F |
-| `CapsLock+Backspace` | Clear Contents | Delete key |
-| `CapsLock+Delete` | Clear All | Alt+H → E → A |
+| `CapsLock+Shift+Delete` | Clear Formats | Alt+H → E → F |
+| `CapsLock+Delete` | Clear Contents | Delete key |
+| `CapsLock+Ctrl+Delete` | Clear All | Alt+H → E → A |
 
-> **Tip:** Every data, layout, and cleanup command in this table is mirrored on the new Ctrl+Alt+CapsLock layer so that related tools can be executed from a dedicated three-modifier posture.
+> **Tip:** Every data, layout, and cleanup command in this table is mirrored on the new Ctrl+Alt+CapsLock layer—including the consolidated Delete-based clears (Shift=Formats, Ctrl=All)—so related tools stay grouped under a dedicated three-modifier posture.
 
 ### HELP
 
@@ -179,9 +179,9 @@ Hold **CapsLock+Ctrl+Alt** to access a reorganized "power" layer that groups rel
 
 | Hotkey | Action | Description |
 |--------|--------|-------------|
-| `CapsLock+Ctrl+Alt+Z` | Clear Formats | Alt+H → E → F |
-| `CapsLock+Ctrl+Alt+Backspace` | Clear Contents | Delete cell contents |
-| `CapsLock+Ctrl+Alt+Delete` | Clear All | Alt+H → E → A |
+| `CapsLock+Ctrl+Alt+Shift+Delete` | Clear Formats | Alt+H → E → F |
+| `CapsLock+Ctrl+Alt+Delete` | Clear Contents | Delete cell contents |
+| `CapsLock+Ctrl+Alt+Ctrl+Delete` | Clear All | Alt+H → E → A |
 
 ## Special Modifier Combinations
 

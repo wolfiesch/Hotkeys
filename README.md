@@ -53,7 +53,9 @@ A comprehensive AutoHotkey script that provides layered hotkey functionality for
 - `CapsLock + N` - Convert to Number
 - `CapsLock + E` - Text to Columns
 - `CapsLock + F7` - Toggle AutoFilter
-- `CapsLock + Z` - Clear Formats
+- `CapsLock + Delete` - Clear Contents
+- `CapsLock + Shift + Delete` - Clear Formats
+- `CapsLock + Ctrl + Delete` - Clear All
 
 ## 📚 Documentation
 
