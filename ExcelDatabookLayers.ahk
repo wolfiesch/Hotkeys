@@ -13,6 +13,14 @@
 ; Keep CapsLock off
 SetCapsLockState("AlwaysOff")
 
+; Allow CI or local validation runs to parse the script without activating
+; any hotkeys. When the environment variable `AHK_VALIDATE_ONLY` is set to 1
+; the script exits immediately after loading, which still forces AutoHotkey
+; to parse the entire file and surface syntax errors.
+if (EnvGet("AHK_VALIDATE_ONLY") == "1") {
+    ExitApp
+}
+
 ; Global variables for sticky tab navigation
 global TabSwitchStates := Map()
 
