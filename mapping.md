@@ -56,6 +56,7 @@ This AutoHotkey script provides Excel and PowerPoint automation through layered 
 | `CapsLock+Numpad*` | Clear Filter | Alt+H → S → C |
 | `CapsLock+Numpad+` | Paste Add | Paste Special with Add operation |
 | `CapsLock+Numpad-` | Paste Subtract | Paste Special with Subtract operation |
+| `CapsLock+Ctrl+Down` | Propogat Paste | Ctrl+Shift+Right → Ctrl+Shift+Down → Shift+Up → Paste Formulas + Format |
 
 ### FORMAT Operations
 
@@ -199,6 +200,7 @@ Hold **CapsLock+Ctrl+Alt** to access a reorganized "power" layer that groups rel
 | `CapsLock+Ctrl+/` | Delete Row | Remove active row |
 | `CapsLock+Ctrl+Right` | Next Sheet | Ctrl+PgDn |
 | `CapsLock+Ctrl+Left` | Previous Sheet | Ctrl+PgUp |
+| `CapsLock+Ctrl+Down` | Propogat Paste | Ctrl+Shift+Right → Ctrl+Shift+Down → Shift+Up → Paste Formulas + Format |
 
 These remain available for muscle memory compatibility but now coexist with the richer [three-key layer](#three-key-layer-ctrlaltcapslock), which groups the same operations alongside related cleanup tools.
 
@@ -216,6 +218,9 @@ These remain available for muscle memory compatibility but now coexist with the 
 - **Modified**: Integrated Ctrl modifier detection into existing F, R, and C hotkeys
 - **Modified**: Changed CapsLock+A from Accounting Format to Set Row Height 5pt
 - **Created**: Initial comprehensive documentation of all hotkeys
+
+### 2025-02-06
+- **Added**: CapsLock+Ctrl+Down "Propogat" workflow for directional propagation followed by paste formulas + format
 
 ### Future Updates
 *This section will be updated as hotkeys are added, modified, or removed*

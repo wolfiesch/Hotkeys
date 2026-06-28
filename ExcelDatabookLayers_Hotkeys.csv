@@ -14,6 +14,7 @@ DELETE,CapsLock+/,SC03A & /,Delete Column / Row,Delete column; Ctrl adds Delete 
 PASTE,CapsLock+Numpad*,SC03A & NumpadMult,Clear Filter,Clear all filters,774
 PASTE,CapsLock+Numpad+,SC03A & NumpadAdd,Paste Add,Paste operation with addition,775
 PASTE,CapsLock+Numpad-,SC03A & NumpadSub,Paste Subtract,Paste operation with subtraction,776
+PASTE,CapsLock+Ctrl+Down,SC03A & Down,Propogat Paste,Ctrl+Shift+Right then Ctrl+Shift+Down then Shift+Up before Paste Formulas + Format,1378
 FORMAT,CapsLock+1,SC03A & 1,Custom Font Color,Run custom font color macro,779
 FORMAT,CapsLock+2,SC03A & 2,Subtotal Format,Apply subtotal row formatting,780
 FORMAT,CapsLock+3,SC03A & 3,Major Total Format,Apply major total row formatting,781
